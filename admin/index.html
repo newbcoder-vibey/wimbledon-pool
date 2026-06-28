@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Wimbledon 2026 Pool</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a5c38; --green-dark: #0f3d25; --gold: #c9a84c;
+    --cream: #faf7f2; --border: #ddd8d0; --text: #1a1814; --text-light: #5a5650;
+    --red: #c0392b; --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #f0ede8; color: var(--text); min-height: 100vh; }
+  .header {
+    background: linear-gradient(135deg, var(--green-dark), var(--green));
+    color: white; padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--gold);
+  }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 22px; }
+  .header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+  .admin-badge { background: var(--red); color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+  .main { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+  .card { background: white; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+  .card-header { background: var(--green); color: white; padding: 13px 18px; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: space-between; }
+  .card-body { padding: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+  .form-group select, .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; background: var(--cream); }
+  .form-group select:focus, .form-group input:focus { outline: none; border-color: var(--green); }
+  .btn { padding: 10px 20px; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: var(--green-dark); }
+  .btn-red { background: var(--red); color: white; }
+  .btn-red:hover { background: #9b2d2d; }
+  .btn-gold { background: var(--gold); color: var(--green-dark); }
+  .btn-full { width: 100%; padding: 13px; font-size: 15px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px) { .two-col { grid-template-columns: 1fr; } }
+  .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+  .alert-success { background: #e8f5ee; color: #1a5c38; border-left: 3px solid #1a5c38; }
+  .alert-error { background: #fdecea; color: #8b1a1a; border-left: 3px solid #c0392b; }
+  .alert-info { background: #fdf4e0; color: #7a5500; border-left: 3px solid #c9a84c; }
+  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .result-row:last-child { border-bottom: none; }
+  .result-round { font-weight: 600; color: var(--green); width: 130px; }
+  .result-winner { flex: 1; }
+  .result-badge { font-size: 10px; padding: 2px 7px; border-radius: 6px; font-weight: 700; }
+  .result-badge.straight { background: #e8e0f5; color: #4a1c6e; }
+  .delete-btn { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 16px; padding: 2px 6px; }
+  .picks-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .picks-table th { background: var(--green-dark); color: white; padding: 8px 10px; text-align: left; font-size: 11px; letter-spacing: 0.5px; }
+  .picks-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .picks-table tr:nth-child(even) td { background: var(--cream); }
+  .login-box { max-width: 380px; margin: 80px auto; background: white; border-radius: 16px; box-shadow: var(--shadow); padding: 32px; text-align: center; }
+  .login-box h2 { font-family: 'Playfair Display', serif; color: var(--green-dark); margin-bottom: 6px; }
+  .login-box p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
+  .toggle-label h4 { font-weight: 600; font-size: 14px; }
+  .toggle-label p { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .toggle { position: relative; display: inline-block; width: 48px; height: 26px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 26px; transition: 0.3s; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+  input:checked + .slider { background: var(--green); }
+  input:checked + .slider:before { transform: translateX(22px); }
+  .score-cell { font-weight: 700; color: var(--green); }
+  #loginPage { display: block; }
+  #adminPage { display: none; }
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div style="background:linear-gradient(135deg,#0f3d25,#1a5c38);min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <div class="login-box">
+      <div style="font-size:40px;margin-bottom:12px">🎾</div>
+      <h2>Admin Panel</h2>
+      <p>Wimbledon 2026 Family Pool — Commissioner Access</p>
+      <div class="form-group" style="text-align:left">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter password" onkeyup="if(event.key==='Enter')login()" />
+      </div>
+      <button class="btn btn-green btn-full" onclick="login()">Sign In</button>
+      <div id="loginError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="adminPage">
+  <div class="header">
+    <div>
+      <h1>🎾 Wimbledon Admin</h1>
+      <div class="header-sub">Commissioner Panel — 2026 Family Pool</div>
+    </div>
+    <span class="admin-badge">ADMIN</span>
+  </div>
+
+  <div class="main">
+
+    <!-- SETTINGS -->
+    <div class="card">
+      <div class="card-header">⚙️ Tournament Settings</div>
+      <div class="card-body">
+        <div class="toggle-row">
+          <div class="toggle-label">
+            <h4>Lock Picks</h4>
+            <p>When ON, no new submissions are accepted and picks become visible to all</p>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="togglePicksLocked" onchange="saveSetting('picks_locked', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div id="settingsAlert"></div>
+      </div>
+    </div>
+
+    <!-- ENTER RESULTS -->
+    <div class="card">
+      <div class="card-header">📥 Enter Match Results</div>
+      <div class="card-body">
+        <div class="two-col">
+          <div class="form-group">
+            <label>Gender</label>
+            <select id="resultGender" onchange="updateResultPlayerList()">
+              <option value="mens">Men's Singles</option>
+              <option value="womens">Women's Singles</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Round</label>
+            <select id="resultRound">
+              <option value="r1">Round 1</option>
+              <option value="r2">Round 2</option>
+              <option value="r3">Round 3 (R16)</option>
+              <option value="qf">Quarterfinal</option>
+              <option value="sf">Semifinal</option>
+              <option value="f">Final / Champion</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Winner</label>
+          <select id="resultWinner">
+            <option value="">— Select winner —</option>
+          </select>
+        </div>
+        <div class="toggle-row" style="margin-bottom:16px">
+          <div class="toggle-label">
+            <h4>Straight Sets Win?</h4>
+            <p>Winner won without dropping a set (+bonus pts)</p>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="resultStraightSets">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div id="resultAlert"></div>
+        <button class="btn btn-green btn-full" onclick="saveResult()">Save Result</button>
+      </div>
+    </div>
+
+    <!-- RESULTS LIST -->
+    <div class="card">
+      <div class="card-header">
+        <span>📋 Entered Results</span>
+        <button class="btn btn-gold" style="font-size:12px;padding:5px 12px;" onclick="loadResults()">↻ Refresh</button>
+      </div>
+      <div id="resultsList"><div style="padding:20px;color:#aaa;text-align:center">Loading...</div></div>
+    </div>
+
+    <!-- SUBMISSIONS -->
+    <div class="card">
+      <div class="card-header">
+        <span>👥 Submissions (${0})</span>
+        <button class="btn btn-gold" style="font-size:12px;padding:5px 12px;" onclick="loadPicks()">↻ Refresh</button>
+      </div>
+      <div id="picksList"><div style="padding:20px;color:#aaa;text-align:center">Loading...</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://mqaeefbptvxjglpuvfbu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xYWVlZmJwdHZ4amdscHV2ZmJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NTMxODcsImV4cCI6MjA5ODIyOTE4N30.nYa84B2v5szV057Ao3N-3q2VeqpV4uFqwQOs3W4IB90';
+const ADMIN_PASSWORD = 'wimbledon2026';
+
+const MENS_PLAYERS = ["Jannik Sinner","Alexander Zverev","Novak Djokovic","Felix Auger-Aliassime","Ben Shelton","Alex de Minaur","Taylor Fritz","Daniil Medvedev","Flavio Cobolli","Alexander Bublik","Casper Ruud","Andrey Rublev","Jiri Lehecka","Luciano Darderi","Jakub Mensik","Learner Tien","Frances Tiafoe","Francisco Cerundolo","Karen Khachanov","Arthur Fils","Tommy Paul","A Davidovich Fokina","Rafael Jodar","Joao Fonseca","Artur Rinderknech","Cameron Norrie","Ugo Humbert","Brandon Nakashima","Tomas Etcheverry","Alejandro Tabilo","Ignacio Buse","Matteo Arnaldi","Denis Shapovalov","Hubert Hurkacz","Grigor Dimitrov","Stefanos Tsitsipas","Matteo Berrettini","Stan Wawrinka","Giovani Mpetshi Perricard","Jack Draper","Mackenzie McDonald","Gabriel Diallo","Lorenzo Sonego","Terence Atmane","Jan Choinski","Vilius Gaubas","Thanasi Kokkinakis","Alexi Popyrin","Daniel Altmaier","Jacob Fearnley","Jaume Munar","Quentin Halys","Marcos Giron","Harry Wendelken","Alex Bockx","Nuno Borges","Tristan Boyer","Aleksandr Vukic","Jenson Brooksby","Emiliano Nava","Felix Gill","Pablo Carreno Busta","Max Basing","Ethan Quinn","Sebastian Ofner","Martin Landaluce","Alexandre Muller","Jack Pinnington Jones","Sebastian Baez","Daniel Merida","Marin Cilic","Alexander Shevchenko","Dino Prizmic","Nicolas Meija","M Zheng","Juan Francisco Cerundolo","Fabian Marozsan","Marton Fucsovics","Dalibor Svrcina","Roman Safiullin","Botic van de Zandschulp","Rinky Hijikata","Roberto Bautista Agut","Oliver Tarvet","Martin Damm","Hugo Gaston","Y.B. Wu","Roman Burruchaga","Titouan Droguet","Zachary Svajda","Kamil Majchrzak","Billy Harris","Yannick Hanfmann","Tallon Griekspoor","James Duckworth","Mariano Navone","Toby Samuel","Dane Sweeny","Raphael Collignon","Zizou Bergs","Sho Shimabukuro","Jaime Faria","Damir Dzumhur","Arthur Fery","Otto Virtanen","Patrick Kypson","Benjamin Bonzi","Miromir Kecmanovic","Hamad Medjedovic","S.W. Kwon","Aleksandar Kovacevic","Jesper de Jong","Marco Trungelliti","Luca Van Assche","Valentin Royer","Corentin Moutet","Adrian Mannarino","Matia Bellucci","Adolfo Vallejo","Camilio Ugo Carabelli","Jan Lennard Struff"];
+const WOMENS_PLAYERS = ["Aryna Sabalenka","Elena Rybakina","Iga Swiatek","Jessica Pegula","Mirra Andreeva","Amanda Anisimova","Coco Gauff","Elina Svitolina","Linda Noskova","Karolina Muchova","Belinda Bencic","Marta Kostyuk","Jasmine Paolini","Naomi Osaka","Diana Shnaider","Iva Jovic","Sorana Cristea","Ekaterina Alexandrova","Anna Kalinskaya","Emma Navarro","Marie Bouzkova","Leylah Fernandez","Emma Navarro","Clara Tauson","Elise Mertens","Madison Keys","Anastasia Potapova","Ann Li","Alexandra Eala","Emma Raducanu","Donna Vekic","K Siniakova","Serena Williams","Daria Kasatkina","Qinwen Zheng","Anastasia Potapova","Barbora Krejcikova","Magda Linette","Darja Vidmanova","Dayana Yastremska","Panna Udvardy","Tatjana Maria","Mika Stojsavljevic","Diane Parry","Robin Montgomery","Viktorija Golubic","Kamilia Rakhimova","Maria Sakkari","Renata Zarazua","Maya Joint","Karolina Pliskova","Taylor Townsend","Lina Gjorcheska","Petra Marcinko","Katie Swan","Kayla Day","Sara Bejlek","Alina Korneeva","Simona Waltert","Ella Seidel","Eva Lys","Liudmila Samsonova","Tyra Caterina Grant","Talia Gibson","Laura Siegemund","Maria Timofeeva","Caty McNally","Lois Boisson","Teodora Kostovic","McCartney Kessler","Harriet Dart","Antonia Ruzic","Janice Tjen","Mingge Xu","Emiliana Arango","Elsa Jacquemot","A Zakharova","Shuai Zhang","Alicia Dudeney","Maja Chwalinska","Nikola Bartunkova","Hannah Klugman","Victoria Jimenez Kasintseva","Aoi Ito","Jessica Bouzas Maneiro","Lanlana Taraudee","Lilli Tagger","Jaqueline Cristian","Xinyu Wang","Elisabetta Cocciaretto","Francesca Jones","Magdalena Frech","Zenyep Sonmez","Claire Liu","Hanne Vandewinkel","Solana Sierra","Ana Bondar","Tamara Korpatsch","Daria Snigur","Veronika Erjavec","Leolia Jeanjean","Alja Tomljanovic","Mariam Bolkvadze","Ashlynn Krueger","Paula Badosa","Oksana Selekhmeteva","Sinja Kraus","Yuliia Starodubtseva","Anna Blinkova","Nadia Podoroska","Iryna Shymanovich","Anhelina Kalinina","Sara Sorribes Tormo","Yulia Putintseva","Oleksandra Oliynykova","Jelena Ostapenko","Bianca Andreescu","Alyicia Parks","Mananchaya Sawagkaew","Payton Stearns","Kimberley Birrell","Camilia Osorio","Polina Kudermetova","Katie Boulter","Beatriz Haddad Maia","Elena-Gabriella Ruse"];
+
+const ROUND_NAMES = { r1:'Round 1', r2:'Round 2', r3:'Round 3 (R16)', qf:'Quarterfinal', sf:'Semifinal', f:'Final' };
+
+async function sbFetch(endpoint, options = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || 'return=representation',
+      ...options.headers
+    },
+    ...options
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || res.statusText);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+function login() {
+  const pw = document.getElementById('adminPassword').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminPage').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('loginError').innerHTML = '<div class="alert alert-error" style="margin-top:12px">Incorrect password.</div>';
+  }
+}
+
+function updateResultPlayerList() {
+  const gender = document.getElementById('resultGender').value;
+  const players = gender === 'mens' ? MENS_PLAYERS : WOMENS_PLAYERS;
+  const sel = document.getElementById('resultWinner');
+  sel.innerHTML = '<option value="">— Select winner —</option>';
+  [...new Set(players)].sort().forEach(p => {
+    sel.innerHTML += `<option value="${p}">${p}</option>`;
+  });
+}
+
+async function saveSetting(key, value) {
+  try {
+    // Upsert into settings table
+    await sbFetch('settings', {
+      method: 'POST',
+      prefer: 'resolution=merge-duplicates,return=minimal',
+      body: JSON.stringify({ key, value: String(value) })
+    });
+    document.getElementById('settingsAlert').innerHTML = `<div class="alert alert-success">✅ Setting saved.</div>`;
+    setTimeout(() => document.getElementById('settingsAlert').innerHTML = '', 2000);
+  } catch(e) {
+    document.getElementById('settingsAlert').innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+async function saveResult() {
+  const gender = document.getElementById('resultGender').value;
+  const round = document.getElementById('resultRound').value;
+  const winner = document.getElementById('resultWinner').value;
+  const straight_sets = document.getElementById('resultStraightSets').checked;
+
+  if (!winner) { document.getElementById('resultAlert').innerHTML = '<div class="alert alert-error">Select a winner first.</div>'; return; }
+
+  // round key e.g. "mens_r1" or "champion_m" for final
+  let roundKey = `${gender}_${round}`;
+  if (round === 'f') {
+    // Also save champion
+    roundKey = `${gender}_f`;
+    try {
+      await sbFetch('results', {
+        method: 'POST',
+        prefer: 'resolution=merge-duplicates,return=minimal',
+        body: JSON.stringify({ round: gender === 'mens' ? 'champion_m' : 'champion_w', winner, straight_sets: false })
+      });
+    } catch(e) {}
+  }
+
+  try {
+    await sbFetch('results', {
+      method: 'POST',
+      prefer: 'resolution=merge-duplicates,return=minimal',
+      body: JSON.stringify({ round: roundKey, winner, straight_sets })
+    });
+    document.getElementById('resultAlert').innerHTML = `<div class="alert alert-success">✅ Result saved: ${winner} won ${ROUND_NAMES[round] || round} (${gender})${straight_sets ? ' — straight sets' : ''}</div>`;
+    document.getElementById('resultStraightSets').checked = false;
+    loadResults();
+  } catch(e) {
+    document.getElementById('resultAlert').innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+async function deleteResult(round) {
+  if (!confirm(`Delete result for ${round}?`)) return;
+  try {
+    await sbFetch(`results?round=eq.${encodeURIComponent(round)}`, { method: 'DELETE', prefer: 'return=minimal' });
+    loadResults();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function loadResults() {
+  try {
+    const results = await sbFetch('results?select=*&order=created_at.desc');
+    const el = document.getElementById('resultsList');
+    if (!results || results.length === 0) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:#aaa;font-size:13px">No results entered yet.</div>';
+      return;
+    }
+    el.innerHTML = results.map(r => `
+      <div class="result-row">
+        <div class="result-round">${r.round}</div>
+        <div class="result-winner">${r.winner}</div>
+        <div>
+          ${r.straight_sets ? '<span class="result-badge straight">Str. Sets</span>' : ''}
+        </div>
+        <button class="delete-btn" onclick="deleteResult('${r.round}')">🗑</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('resultsList').innerHTML = `<div class="alert alert-error" style="margin:12px">Error: ${e.message}</div>`;
+  }
+}
+
+async function loadPicks() {
+  try {
+    const picks = await sbFetch('picks?select=*&order=submitted_at.asc');
+    const el = document.getElementById('picksList');
+    if (!picks || picks.length === 0) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:#aaa;font-size:13px">No submissions yet.</div>';
+      return;
+    }
+    const rounds = ['r1','r2','r3','qf','sf','f'];
+    el.innerHTML = `<div style="overflow-x:auto"><table class="picks-table">
+      <thead><tr>
+        <th>Name</th>
+        <th>M Champ</th><th>W Champ</th>
+        ${rounds.map(r => `<th>M ${r.toUpperCase()}</th><th>W ${r.toUpperCase()}</th>`).join('')}
+        <th>Submitted</th>
+      </tr></thead>
+      <tbody>
+        ${picks.map(p => `<tr>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.mens_champion || '—'}</td>
+          <td>${p.womens_champion || '—'}</td>
+          ${rounds.map(r => `<td>${p[`mens_${r}`] || '—'}</td><td>${p[`womens_${r}`] || '—'}</td>`).join('')}
+          <td style="color:#aaa;font-size:11px">${new Date(p.submitted_at).toLocaleString()}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+  } catch(e) {
+    document.getElementById('picksList').innerHTML = `<div class="alert alert-error" style="margin:12px">Error: ${e.message}</div>`;
+  }
+}
+
+async function loadSettingsState() {
+  try {
+    const rows = await sbFetch('settings?select=*');
+    if (rows) {
+      rows.forEach(r => {
+        if (r.key === 'picks_locked') {
+          document.getElementById('togglePicksLocked').checked = r.value === 'true';
+        }
+      });
+    }
+  } catch(e) {}
+}
+
+function init() {
+  updateResultPlayerList();
+  loadSettingsState();
+  loadResults();
+  loadPicks();
+}
+
+document.addEventListener('keyup', e => {
+  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') login();
+});
+</script>
+</body>
+</html>
