@@ -6,147 +6,296 @@
 <title>Wimbledon 2026 Family Pool</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green:#1a5c38;--green-light:#2d7a4f;--green-dark:#0f3d25;
-    --gold:#c9a84c;--gold-light:#e8c96a;--cream:#faf7f2;
-    --gray:#9a9490;--text:#1a1814;--text-light:#5a5650;
-    --border:#ddd8d0;--shadow:0 4px 24px rgba(0,0,0,0.10);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--text);min-height:100vh;}
+:root {
+  --green:#1a5c38;--green-light:#2d7a4f;--green-dark:#0f3d25;
+  --gold:#c9a84c;--gold-light:#e8c96a;--cream:#faf7f2;
+  --gray:#9a9490;--text:#1a1814;--text-light:#5a5650;
+  --border:#ddd8d0;--shadow:0 4px 24px rgba(0,0,0,0.10);
+  --card-w:148px; --card-h:36px; --round-gap:32px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--text);min-height:100vh;}
 
-  .header{background:linear-gradient(135deg,var(--green-dark) 0%,var(--green) 60%,var(--green-light) 100%);padding:22px 24px 18px;text-align:center;border-bottom:3px solid var(--gold);}
-  .eyebrow{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
-  .header h1{font-family:'Playfair Display',serif;font-size:clamp(26px,6vw,48px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:3px;}
-  .header-sub{font-size:13px;color:rgba(255,255,255,0.65);}
-  .header-dates{display:inline-block;margin-top:9px;padding:4px 14px;background:rgba(201,168,76,0.2);border:1px solid var(--gold);border-radius:20px;font-size:11px;color:var(--gold-light);font-weight:500;letter-spacing:1px;}
-  .deadline-banner{background:linear-gradient(135deg,#7a1a1a,#c0392b);color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:600;display:none;}
-  .nav{background:var(--green-dark);display:flex;justify-content:center;gap:4px;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,0.1);flex-wrap:wrap;}
-  .nav-btn{padding:7px 15px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;background:transparent;color:rgba(255,255,255,0.65);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
-  .nav-btn:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
-  .nav-btn.active{background:var(--gold);border-color:var(--gold);color:var(--green-dark);font-weight:600;}
-  .main{max-width:860px;margin:0 auto;padding:20px 16px 60px;}
-  .view{display:none;} .view.active{display:block;}
-  .card{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
-  .card-hdr{background:var(--green);color:#fff;padding:13px 18px;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px;}
-  .badge{background:var(--gold);color:var(--green-dark);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:uppercase;}
-  .card-body{padding:18px;}
-  .alert{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;line-height:1.5;}
-  .alert-success{background:#e8f5ee;color:var(--green-dark);border-left:3px solid var(--green);}
-  .alert-error{background:#fdecea;color:#8b1a1a;border-left:3px solid #c0392b;}
-  .alert-info{background:#fdf4e0;color:#7a5500;border-left:3px solid var(--gold);}
-  .form-group{margin-bottom:13px;}
-  .form-group label{display:block;font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
-  .form-group input,.form-group select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--cream);}
-  .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--green);background:#fff;}
-  .btn-primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;border:none;padding:13px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;width:100%;transition:all 0.2s;}
-  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,92,56,0.35);}
-  .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  @media(max-width:520px){.two-col{grid-template-columns:1fr;}}
-  .sec-div{text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin:20px 0 14px;display:flex;align-items:center;gap:12px;}
-  .sec-div::before,.sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
-  .loading{text-align:center;padding:36px;color:var(--gray);}
-  .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .empty-state{text-align:center;padding:36px 20px;color:var(--text-light);}
-  .empty-state .icon{font-size:36px;margin-bottom:10px;}
-  .empty-state h3{font-family:'Playfair Display',serif;color:var(--text);margin-bottom:6px;}
-  .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
-  .status-dot.live{background:#2ecc71;animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--green-dark) 0%,var(--green) 60%,var(--green-light) 100%);padding:18px 24px 14px;text-align:center;border-bottom:3px solid var(--gold);}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,42px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:2px;}
+.header-sub{font-size:12px;color:rgba(255,255,255,0.65);}
+.header-dates{display:inline-block;margin-top:8px;padding:3px 12px;background:rgba(201,168,76,0.2);border:1px solid var(--gold);border-radius:20px;font-size:11px;color:var(--gold-light);font-weight:500;letter-spacing:1px;}
+.deadline-banner{background:linear-gradient(135deg,#7a1a1a,#c0392b);color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:600;display:none;}
 
-  /* LEADERBOARD */
-  .lb-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--border);gap:12px;}
-  .lb-row:last-child{border-bottom:none;}
-  .rank{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;width:30px;text-align:center;color:var(--gray);flex-shrink:0;}
-  .rank.gold{color:#c9a84c;}.rank.silver{color:#9ba5b0;}.rank.bronze{color:#a0714a;}
-  .lb-info{flex:1;}
-  .lb-name{font-weight:600;font-size:15px;}
-  .lb-breakdown{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
-  .bb{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;}
-  .bb.bracket{background:#e8f5ee;color:var(--green);}
-  .bb.champ{background:#fdf4e0;color:#8a6a00;}
-  .lb-score{text-align:right;flex-shrink:0;}
-  .score-pts{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--green);line-height:1;}
-  .score-lbl{font-size:10px;color:var(--gray);font-weight:500;letter-spacing:1px;text-transform:uppercase;}
+/* ── NAV ── */
+.nav{background:var(--green-dark);display:flex;justify-content:center;gap:4px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,0.1);flex-wrap:wrap;}
+.nav-btn{padding:6px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;background:transparent;color:rgba(255,255,255,0.65);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover{color:#fff;border-color:rgba(255,255,255,0.5);}
+.nav-btn.active{background:var(--gold);border-color:var(--gold);color:var(--green-dark);font-weight:700;}
 
-  /* BRACKET TABS */
-  .btabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:18px;}
-  .btab{flex:1;padding:11px;text-align:center;font-weight:600;font-size:14px;cursor:pointer;color:var(--text-light);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
-  .btab.active{color:var(--green);border-bottom-color:var(--green);}
+.main{max-width:1000px;margin:0 auto;padding:16px 16px 60px;}
+.view{display:none;}.view.active{display:block;}
+.card{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
+.card-hdr{background:var(--green);color:#fff;padding:12px 16px;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.badge{background:var(--gold);color:var(--green-dark);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.card-body{padding:16px;}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;line-height:1.5;}
+.alert-success{background:#e8f5ee;color:var(--green-dark);border-left:3px solid var(--green);}
+.alert-error{background:#fdecea;color:#8b1a1a;border-left:3px solid #c0392b;}
+.alert-info{background:#fdf4e0;color:#7a5500;border-left:3px solid var(--gold);}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--cream);}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--green);background:#fff;}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;border:none;padding:12px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;width:100%;transition:all 0.2s;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,92,56,0.35);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.two-col{grid-template-columns:1fr;}}
+.sec-div{text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin:18px 0 12px;display:flex;align-items:center;gap:12px;}
+.sec-div::before,.sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
+.loading{text-align:center;padding:32px;color:var(--gray);}
+.spinner{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.status-dot.live{background:#2ecc71;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-  /* PROGRESS */
-  .prog-wrap{background:#f0ede8;border-radius:20px;height:8px;margin-bottom:6px;overflow:hidden;}
-  .prog-fill{background:linear-gradient(90deg,var(--green),var(--green-light));height:100%;border-radius:20px;transition:width 0.4s;}
-  .prog-label{font-size:11px;color:var(--text-light);margin-bottom:16px;font-weight:500;}
+/* ── LEADERBOARD ── */
+.lb-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);gap:12px;}
+.lb-row:last-child{border-bottom:none;}
+.rank{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;width:28px;text-align:center;color:var(--gray);flex-shrink:0;}
+.rank.gold{color:#c9a84c;}.rank.silver{color:#9ba5b0;}.rank.bronze{color:#a0714a;}
+.lb-info{flex:1;}
+.lb-name{font-weight:600;font-size:15px;}
+.lb-breakdown{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;}
+.bb{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;}
+.bb.bracket{background:#e8f5ee;color:var(--green);}
+.bb.champ{background:#fdf4e0;color:#8a6a00;}
+.lb-score{text-align:right;flex-shrink:0;}
+.score-pts{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--green);line-height:1;}
+.score-lbl{font-size:10px;color:var(--gray);font-weight:500;letter-spacing:1px;text-transform:uppercase;}
+.pick-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--cream);border-radius:7px;font-size:13px;margin-bottom:4px;}
+.pr.correct{color:var(--green);font-weight:700;}
+.pr.incorrect{color:#c0392b;font-weight:700;}
+.pr.pending{color:var(--gray);}
 
-  /* ROUND BLOCK */
-  .round-block{margin-bottom:22px;}
-  .round-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-  .round-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green-dark);}
-  .round-pts-tag{background:var(--green);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:0.5px;}
-  .round-locked{opacity:0.38;pointer-events:none;}
-  .round-locked-msg{font-size:12px;color:var(--gray);font-style:italic;margin-bottom:10px;padding:8px 12px;background:#f8f8f8;border-radius:6px;border-left:3px solid var(--border);}
+/* ── BRACKET TABS ── */
+.btabs{display:flex;background:var(--green-dark);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.btab{flex:1;padding:10px;text-align:center;font-weight:600;font-size:13px;cursor:pointer;color:rgba(255,255,255,0.6);transition:all 0.2s;border:none;background:transparent;font-family:'Inter',sans-serif;}
+.btab.active{background:var(--gold);color:var(--green-dark);}
 
-  /* MATCH CARD */
-  .match-card{background:var(--cream);border-radius:10px;overflow:hidden;margin-bottom:8px;border:1.5px solid var(--border);transition:border-color 0.2s;}
-  .match-card.done{border-color:var(--green);}
-  .player-btn{width:100%;text-align:left;padding:11px 14px;background:#fff;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px;transition:background 0.15s;min-height:44px;}
-  .player-btn:first-of-type{border-bottom:1px solid var(--border);}
-  .player-btn:hover{background:#f0faf4;}
-  .player-btn.picked{background:var(--green);color:#fff;font-weight:700;}
-  .player-btn.picked .spill{background:rgba(255,255,255,0.25);color:#fff;}
-  .spill{background:var(--green);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0;}
-  .nat{flex-shrink:0;font-size:15px;}
-  .pname{flex:1;}
-  .check{margin-left:auto;font-size:14px;}
-  .info-btn{margin-left:auto;font-size:12px;opacity:0.5;background:none;border:none;cursor:pointer;padding:0 2px;flex-shrink:0;}
-  .info-btn:hover{opacity:1;}
-  .vs-div{text-align:center;font-size:9px;font-weight:800;letter-spacing:1px;color:var(--gray);background:#f0ede8;padding:2px 0;}
-  .tbd{padding:11px 14px;color:#bbb;font-size:13px;font-style:italic;background:#fafafa;display:flex;align-items:center;gap:8px;min-height:44px;}
-  .tbd:first-of-type{border-bottom:1px solid var(--border);}
+/* ── PROGRESS ── */
+.prog-wrap{background:#e8e4df;border-radius:20px;height:7px;margin-bottom:5px;overflow:hidden;}
+.prog-fill{background:linear-gradient(90deg,var(--green),var(--green-light));height:100%;border-radius:20px;transition:width 0.4s;}
+.prog-label{font-size:11px;color:var(--text-light);margin-bottom:12px;font-weight:500;}
 
-  /* CHAMP */
-  .champ-box{background:linear-gradient(135deg,#fdf4e0,#fef9ee);border:1.5px solid var(--gold);border-radius:10px;padding:16px;margin-bottom:14px;}
-  .champ-box h4{font-family:'Playfair Display',serif;font-size:16px;color:var(--green-dark);margin-bottom:3px;}
-  .champ-box p{font-size:12px;color:var(--text-light);margin-bottom:10px;}
+/* ── CHAMP BOX ── */
+.champ-box{background:linear-gradient(135deg,#fdf4e0,#fef9ee);border:1.5px solid var(--gold);border-radius:10px;padding:14px;margin-bottom:12px;}
+.champ-box h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--green-dark);margin-bottom:2px;}
+.champ-box p{font-size:11px;color:var(--text-light);margin-bottom:8px;}
 
-  /* DRAW VIEW */
-  .draw-hdr{background:var(--green-dark);color:#fff;padding:7px 14px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;display:flex;justify-content:space-between;}
-  .draw-hdr .pts-tag{color:var(--gold);}
-  .draw-match{display:flex;align-items:stretch;border-bottom:1px solid var(--border);font-size:13px;}
-  .draw-match:last-child{border-bottom:none;}
-  .draw-p{flex:1;padding:9px 12px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background 0.15s;}
-  .draw-p:hover{background:var(--cream);}
-  .draw-vs{padding:9px 5px;color:var(--gray);font-size:10px;font-weight:700;display:flex;align-items:center;background:#f0ede8;}
+/* ── SCORING TABLE ── */
+.stbl{width:100%;border-collapse:collapse;font-size:13px;}
+.stbl th{background:var(--green-dark);color:#fff;padding:7px 12px;text-align:left;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+.stbl td{padding:8px 12px;border-bottom:1px solid var(--border);}
+.stbl tr:last-child td{border-bottom:none;}
+.stbl tr:nth-child(even) td{background:var(--cream);}
 
-  /* SCORING TABLE */
-  .stbl{width:100%;border-collapse:collapse;font-size:13px;}
-  .stbl th{background:var(--green-dark);color:#fff;padding:8px 12px;text-align:left;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;}
-  .stbl td{padding:9px 12px;border-bottom:1px solid var(--border);}
-  .stbl tr:last-child td{border-bottom:none;}
-  .stbl tr:nth-child(even) td{background:var(--cream);}
+/* ════════════════════════════════════════
+   VISUAL BRACKET
+   ════════════════════════════════════════ */
+.bracket-outer {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 8px 20px;
+  background: #f4f1eb;
+  border-radius: 10px;
+  cursor: grab;
+}
+.bracket-outer:active { cursor: grabbing; }
 
-  /* MODAL */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center;padding:16px;}
-  .modal-bg.open{display:flex;}
-  .modal{background:#fff;border-radius:14px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
-  .modal-hdr{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:18px;position:relative;}
-  .modal-hdr h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
-  .modal-hdr .sbadge{display:inline-block;background:var(--gold);color:var(--green-dark);font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;margin-bottom:5px;}
-  .mclose{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;}
-  .modal-body{padding:16px;}
-  .srow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .srow:last-child{border-bottom:none;}
-  .slbl{color:var(--text-light);}
-  .sval{font-weight:600;}
-  .bio{margin-top:10px;font-size:12px;color:var(--text-light);line-height:1.6;background:var(--cream);padding:10px;border-radius:8px;}
+.bracket-canvas {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  min-width: max-content;
+  align-items: center;
+}
 
-  .pick-item{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;background:var(--cream);border-radius:7px;font-size:13px;margin-bottom:5px;}
-  .pr.correct{color:var(--green);font-weight:700;}
-  .pr.incorrect{color:#c0392b;font-weight:700;}
-  .pr.pending{color:var(--gray);}
+/* Each round column */
+.b-round-col {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Round header label */
+.b-round-label {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--green-dark);
+  padding: 0 8px 8px;
+  white-space: nowrap;
+}
+.b-round-pts {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  margin-left: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Matchup container — positions two player slots + connector lines */
+.b-match-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* The two player slots */
+.b-slot {
+  width: var(--card-w);
+  height: var(--card-h);
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  gap: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  user-select: none;
+}
+.b-slot:first-child { border-bottom: none; border-radius: 6px 6px 0 0; }
+.b-slot:last-child { border-radius: 0 0 6px 6px; }
+.b-slot:hover:not(.b-tbd):not(.b-picked) { background: #f0faf4; border-color: var(--green-light); }
+.b-slot.b-picked {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green-dark);
+  font-weight: 700;
+}
+.b-slot.b-tbd { color: #bbb; cursor: default; font-style: italic; background: #fafafa; }
+.b-slot.b-eliminated { color: #ccc; background: #f8f8f8; text-decoration: line-through; cursor: not-allowed; }
+.b-seed {
+  background: var(--green);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.b-slot.b-picked .b-seed { background: rgba(255,255,255,0.3); }
+.b-check { margin-left: auto; flex-shrink: 0; font-size: 11px; }
+.b-nat { flex-shrink: 0; font-size: 13px; }
+.b-name { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+
+/* VS divider between slots */
+.b-vs {
+  width: var(--card-w);
+  text-align: center;
+  font-size: 8px;
+  font-weight: 800;
+  color: #999;
+  background: #eee;
+  padding: 1px 0;
+  border-left: 1.5px solid #ccc;
+  border-right: 1.5px solid #ccc;
+}
+
+/* Connector lines between rounds */
+.b-connector {
+  width: var(--round-gap);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-self: stretch;
+}
+
+/* Champion slot in center */
+.champ-slot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+.champ-slot-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.champ-slot {
+  width: 160px;
+  min-height: 52px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px;
+  gap: 3px;
+}
+.champ-slot.empty { color: rgba(255,255,255,0.4); font-style: italic; font-weight: 400; font-size: 11px; }
+.champ-trophy { font-size: 20px; }
+
+/* Mobile hint */
+.scroll-hint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--gray);
+  padding: 6px 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Locked round overlay */
+.b-round-col.locked .b-slot:not(.b-picked) {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:14px;max-width:380px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.modal-hdr{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:16px;position:relative;}
+.modal-hdr h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;}
+.modal-hdr .sbadge{display:inline-block;background:var(--gold);color:var(--green-dark);font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;margin-bottom:4px;}
+.mclose{position:absolute;top:11px;right:11px;background:rgba(255,255,255,0.2);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:14px;}
+.srow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.srow:last-child{border-bottom:none;}
+.slbl{color:var(--text-light);}
+.sval{font-weight:600;text-align:right;max-width:60%;}
+.bio{margin-top:9px;font-size:12px;color:var(--text-light);line-height:1.6;background:var(--cream);padding:9px;border-radius:8px;}
 </style>
 </head>
 <body>
@@ -163,7 +312,6 @@
 <nav class="nav">
   <button class="nav-btn active" onclick="showView('leaderboard',this)">🏆 Leaderboard</button>
   <button class="nav-btn" onclick="showView('submit',this)">📝 Make Picks</button>
-  <button class="nav-btn" onclick="showView('draw',this)">🎾 Draw</button>
   <button class="nav-btn" onclick="showView('scoring',this)">📊 Scoring</button>
 </nav>
 
@@ -181,68 +329,86 @@
     </div>
   </div>
 
-  <!-- SUBMIT -->
+  <!-- SUBMIT / BRACKET -->
   <div id="view-submit" class="view">
-    <div class="card">
-      <div class="card-hdr">📝 Submit Your Bracket</div>
-      <div class="card-body">
-        <div id="submitLocked" style="display:none">
-          <div class="alert alert-error">🔒 Picks are locked — the tournament has started!</div>
-          <button class="btn-primary" onclick="showView('leaderboard',document.querySelector('.nav-btn'))">View Leaderboard</button>
-        </div>
-        <div id="submitDone" style="display:none">
-          <div class="alert alert-success">✅ Your bracket is in! Good luck 🎾</div>
-          <button class="btn-primary" onclick="showView('leaderboard',document.querySelector('.nav-btn'))">View Leaderboard</button>
-        </div>
-        <div id="submitForm">
+
+    <div id="submitLocked" style="display:none">
+      <div class="card"><div class="card-body">
+        <div class="alert alert-error">🔒 Picks are locked — the tournament has started!</div>
+        <button class="btn-primary" onclick="showView('leaderboard',document.querySelector('.nav-btn'))">View Leaderboard</button>
+      </div></div>
+    </div>
+
+    <div id="submitDone" style="display:none">
+      <div class="card"><div class="card-body">
+        <div class="alert alert-success">✅ Your bracket is in! Good luck 🎾</div>
+        <button class="btn-primary" onclick="showView('leaderboard',document.querySelector('.nav-btn'))">View Leaderboard</button>
+      </div></div>
+    </div>
+
+    <div id="submitForm">
+      <!-- Name + Champions -->
+      <div class="card">
+        <div class="card-hdr">📝 Your Picks</div>
+        <div class="card-body">
           <div class="form-group">
             <label>Your Name</label>
             <input type="text" id="participantName" placeholder="Enter your name"/>
           </div>
-
           <div class="sec-div">🏆 Champion Picks (+25 pts each)</div>
-          <div class="champ-box">
-            <h4>👨 Men's Champion</h4>
-            <p>Who lifts the trophy Sunday July 12? +25 bonus points if correct.</p>
-            <div class="form-group" style="margin:0"><select id="mensChampPick"><option value="">— Pick men's champion —</option></select></div>
+          <div class="two-col">
+            <div class="champ-box">
+              <h4>👨 Men's Champion</h4>
+              <p>Who lifts the trophy July 13? +25 pts if correct.</p>
+              <div class="form-group" style="margin:0"><select id="mensChampPick"><option value="">— Pick champion —</option></select></div>
+            </div>
+            <div class="champ-box">
+              <h4>👩 Women's Champion</h4>
+              <p>Who wins Centre Court July 12? +25 pts if correct.</p>
+              <div class="form-group" style="margin:0"><select id="womensChampPick"><option value="">— Pick champion —</option></select></div>
+            </div>
           </div>
-          <div class="champ-box">
-            <h4>👩 Women's Champion</h4>
-            <p>Who wins Centre Court Saturday July 11? +25 bonus points if correct.</p>
-            <div class="form-group" style="margin:0"><select id="womensChampPick"><option value="">— Pick women's champion —</option></select></div>
-          </div>
+        </div>
+      </div>
 
-          <div class="sec-div">🎾 Pick Your Bracket</div>
-          <div class="alert alert-info">Tap a player to pick them as the winner. They advance to the next round. Complete every round to unlock the next. You must finish both draws before submitting.</div>
+      <!-- Bracket -->
+      <div class="card">
+        <div class="card-hdr">
+          🎾 Pick Your Bracket
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:400;opacity:0.8">— tap a player to advance them</span>
+        </div>
+        <div class="card-body" style="padding:12px">
 
           <div class="prog-wrap"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
           <div class="prog-label" id="progLabel">0 of 126 picks made</div>
 
           <div class="btabs">
-            <div class="btab active" onclick="switchTab('mens',this)">👨 Men's Singles</div>
-            <div class="btab" onclick="switchTab('womens',this)">👩 Women's Singles</div>
+            <button class="btab active" onclick="switchTab('mens',this)">👨 Men's Singles</button>
+            <button class="btab" onclick="switchTab('womens',this)">👩 Women's Singles</button>
           </div>
 
-          <div id="mensUI"></div>
-          <div id="womensUI" style="display:none"></div>
+          <div class="scroll-hint">← scroll sideways to see later rounds →</div>
 
-          <div style="margin-top:20px">
-            <div id="submitAlert"></div>
-            <button class="btn-primary" id="submitBtn" onclick="submitPicks()">Submit My Bracket</button>
+          <div id="mensWrapper">
+            <div class="bracket-outer" id="mensBracketOuter">
+              <div class="bracket-canvas" id="mensBracket"></div>
+            </div>
           </div>
+          <div id="womensWrapper" style="display:none">
+            <div class="bracket-outer" id="womensBracketOuter">
+              <div class="bracket-canvas" id="womensBracket"></div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- DRAW -->
-  <div id="view-draw" class="view">
-    <div class="btabs" style="background:#fff;border-radius:12px 12px 0 0;overflow:hidden;margin-bottom:0">
-      <div class="btab active" style="padding:14px" onclick="switchDrawTab('mens',this)">👨 Men's Singles</div>
-      <div class="btab" style="padding:14px" onclick="switchDrawTab('womens',this)">👩 Women's Singles</div>
+      <!-- Submit -->
+      <div class="card"><div class="card-body">
+        <div id="submitAlert"></div>
+        <button class="btn-primary" id="submitBtn" onclick="submitPicks()">Submit My Bracket</button>
+      </div></div>
     </div>
-    <div id="drawMens" class="card" style="border-radius:0 0 12px 12px;margin-top:0"><div id="mensDrawContent"></div></div>
-    <div id="drawWomens" class="card" style="display:none;border-radius:0 0 12px 12px;margin-top:0"><div id="womensDrawContent"></div></div>
   </div>
 
   <!-- SCORING -->
@@ -250,7 +416,7 @@
     <div class="card">
       <div class="card-hdr">📊 How Scoring Works</div>
       <div class="card-body">
-        <p style="font-size:14px;margin-bottom:14px;line-height:1.6;">Pick the winner of every match. Each correct pick earns points — and points double every round. If a player you picked wins in straight sets, you get a bonus too.</p>
+        <p style="font-size:14px;margin-bottom:14px;line-height:1.6">Pick the winner of every match. Points double each round. Bonus points if your pick wins in straight sets.</p>
         <table class="stbl">
           <thead><tr><th>Round</th><th>Correct Pick</th><th>Straight Sets Bonus</th></tr></thead>
           <tbody>
@@ -263,7 +429,7 @@
             <tr><td><strong>Correct Champion (each)</strong></td><td><strong>+25 pts</strong></td><td>—</td></tr>
           </tbody>
         </table>
-        <div class="alert alert-info" style="margin-top:14px">Max possible score: 252 pts per gender (189 bracket + 25 champion + 38 straight sets bonuses) — but nobody will get a perfect bracket!</div>
+        <div class="alert alert-info" style="margin-top:12px">Picks are private until the commissioner locks them at tournament start.</div>
       </div>
     </div>
   </div>
@@ -276,7 +442,7 @@
     <div class="modal-hdr">
       <div class="sbadge" id="mRanking"></div>
       <h3 id="mName"></h3>
-      <div id="mMeta" style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:3px"></div>
+      <div id="mMeta" style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px"></div>
       <button class="mclose" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -293,7 +459,7 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const ROUND_PTS={r1:1,r2:2,r3:4,qf:8,sf:16,f:32};
 const SETS_BONUS={r1:0.5,r2:1,r3:1,qf:2,sf:4,f:8};
 const ROUNDS=['r1','r2','r3','qf','sf','f'];
-const RNAMES={r1:'Round 1',r2:'Round 2',r3:'Round 3 — R16',qf:'Quarterfinal',sf:'Semifinal',f:'Final'};
+const RNAMES={r1:'Round 1',r2:'Round 2',r3:'Round 3',qf:'Quarterfinal',sf:'Semifinal',f:'Final'};
 
 // ── DRAW DATA ─────────────────────────────────────────────────────
 const MENS_R1=[
@@ -432,23 +598,22 @@ const WOMENS_R1=[
 
 const PLAYER_INFO={
   "Jannik Sinner":{ranking:"World No. 1",age:24,titles:"4 Grand Slams",wimbledon:"Defending champion 2025",bio:"The dominant force in men's tennis. Arrives as the man to beat after an early Roland Garros 2026 exit."},
-  "Alexander Zverev":{ranking:"World No. 2",age:29,titles:"2 Grand Slams (FO 2021, FO 2026)",wimbledon:"Best: SF (2021)",bio:"Roland Garros 2026 champion. Inherits No. 2 seed after Alcaraz withdrawal. Powerful baseline game."},
-  "Novak Djokovic":{ranking:"World No. 3",age:39,titles:"24 Grand Slams — 7x Wimbledon champion",wimbledon:"7-time champion, chasing record 25th Slam",bio:"Greatest grass-court player of all time. At 39, still dangerous. Slice backhand and serve on grass remain elite."},
-  "Felix Auger-Aliassime":{ranking:"World No. 5",age:25,titles:"0 Grand Slams",wimbledon:"Best: QF 2022",bio:"Serve-and-volley threat on grass. Consistent top-5 player with a big serve."},
-  "Ben Shelton":{ranking:"World No. 9",age:22,titles:"0 Grand Slams",wimbledon:"No. 4 seed",bio:"Left-handed power server. Explosive game suits grass. Could make a deep run in the most open draw in years."},
+  "Alexander Zverev":{ranking:"World No. 2",age:29,titles:"2 Grand Slams (FO 2021, FO 2026)",wimbledon:"Best: SF (2021)",bio:"Roland Garros 2026 champion. Inherits No. 2 seed after Alcaraz withdrawal."},
+  "Novak Djokovic":{ranking:"World No. 3",age:39,titles:"24 Grand Slams — 7x Wimbledon champion",wimbledon:"7-time champion, chasing record 25th Slam",bio:"Greatest grass-court player ever. At 39, still dangerous. His slice backhand and serve on grass remain elite."},
+  "Felix Auger-Aliassime":{ranking:"World No. 5",age:25,titles:"0 Grand Slams",wimbledon:"Best: QF 2022",bio:"Serve-and-volley threat on grass. Consistent top-5 player."},
+  "Ben Shelton":{ranking:"World No. 9",age:22,titles:"0 Grand Slams",wimbledon:"No. 4 seed",bio:"Left-handed power server. Explosive game suits grass perfectly. Could go deep in the most open draw in years."},
   "Alex de Minaur":{ranking:"World No. 8",age:25,titles:"0 Grand Slams",wimbledon:"No. 5 seed",bio:"Speed and retrieval are his weapons. Has improved his grass game significantly."},
   "Taylor Fritz":{ranking:"World No. 10",age:27,titles:"0 Grand Slams",wimbledon:"No. 6 seed — SF 2025",bio:"Consistent grass performer. Tough R1 draw vs Jack Draper."},
-  "Aryna Sabalenka":{ranking:"World No. 1",age:27,titles:"4 Grand Slams (AO x2, USO x2)",wimbledon:"No. 1 seed — Wimbledon is her only missing major",bio:"World No. 1 chasing her first Wimbledon title. Dominant serve and aggressive baseline game."},
+  "Aryna Sabalenka":{ranking:"World No. 1",age:27,titles:"4 Grand Slams (AO x2, USO x2)",wimbledon:"No. 1 seed — only major she hasn't won",bio:"World No. 1 chasing her first Wimbledon title. Dominant serve and aggressive baseline game."},
   "Elena Rybakina":{ranking:"World No. 4",age:25,titles:"1 Grand Slam (Wimbledon 2022)",wimbledon:"No. 2 seed — defending 2022 title",bio:"Technically the most threatening player on grass. Her flat serve is nearly unreturnable."},
-  "Iga Swiatek":{ranking:"World No. 3",age:25,titles:"6 Grand Slams (FO x5, Wimbledon 2025)",wimbledon:"No. 3 seed — defending champion",bio:"Defending Wimbledon champion but grass is her least dominant surface. Still dangerous deep in the draw."},
+  "Iga Swiatek":{ranking:"World No. 3",age:25,titles:"6 Grand Slams (FO x5, Wimbledon 2025)",wimbledon:"No. 3 seed — defending champion",bio:"Defending Wimbledon champion. Grass is her least dominant surface but she proved herself here in 2025."},
   "Jessica Pegula":{ranking:"World No. 6",age:31,titles:"0 Grand Slams",wimbledon:"No. 4 seed",bio:"Consistent and underrated. Career-high Wimbledon seeding. Solid all-court game."},
-  "Mirra Andreeva":{ranking:"World No. 5",age:18,titles:"1 Grand Slam (FO 2026)",wimbledon:"No. 5 seed — Roland Garros 2026 champion",bio:"Hottest player in women's tennis right now. Won Roland Garros at 18. Youth and confidence on her side."},
-  "Coco Gauff":{ranking:"World No. 9",age:21,titles:"1 Grand Slam (USO 2023)",wimbledon:"No. 7 seed",bio:"Two-time Slam winner looking for her first Wimbledon quarterfinal."},
-  "Serena Williams":{ranking:"Unranked (WC)",age:44,titles:"23 Grand Slams — 7x Wimbledon champion",wimbledon:"Wild card — first Slam since USO 2022",bio:"The greatest of all time returns to the All England Club. First competitive singles match in nearly 4 years. The crowd will be electric."},
+  "Mirra Andreeva":{ranking:"World No. 5",age:18,titles:"1 Grand Slam (FO 2026)",wimbledon:"No. 5 seed — Roland Garros 2026 champion",bio:"Hottest player in women's tennis. Won Roland Garros at 18. Youth and momentum on her side."},
+  "Coco Gauff":{ranking:"World No. 9",age:21,titles:"1 Grand Slam (USO 2023)",wimbledon:"No. 7 seed",bio:"Two-time Slam winner. Looking for her first Wimbledon quarterfinal."},
+  "Serena Williams":{ranking:"Unranked (WC)",age:44,titles:"23 Grand Slams — 7x Wimbledon champion",wimbledon:"Wild card — first Slam since USO 2022",bio:"The greatest of all time returns. First competitive singles match in nearly 4 years. Centre Court will be electric."},
 };
 
 // ── STATE ─────────────────────────────────────────────────────────
-// picks[gender][round] = array indexed by match number, value = winner name or null
 const picks={
   mens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(2).fill(null)},
   womens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(2).fill(null)}
@@ -474,7 +639,6 @@ function showView(name,btn){
   document.getElementById(`view-${name}`).classList.add('active');
   if(btn)btn.classList.add('active');
   if(name==='leaderboard')loadLeaderboard();
-  if(name==='draw')renderDraw();
 }
 
 // ── SETTINGS ─────────────────────────────────────────────────────
@@ -497,8 +661,8 @@ async function loadLeaderboard(){
       sbFetch('results?select=*')
     ]);
     if(!allPicks||allPicks.length===0){
-      el.innerHTML=`<div class="empty-state"><div class="icon">🎾</div><h3>No picks yet</h3><p>Be the first to submit your bracket!</p></div>`;
-      cel.innerHTML=`<p style="padding:16px;color:#aaa;font-size:13px">No picks submitted yet.</p>`;
+      el.innerHTML=`<div style="text-align:center;padding:32px;color:var(--gray)"><div style="font-size:36px;margin-bottom:10px">🎾</div><div style="font-weight:600;color:var(--text)">No picks yet</div><div style="font-size:13px;margin-top:4px">Be the first to submit your bracket!</div></div>`;
+      cel.innerHTML=`<p style="color:#aaa;font-size:13px;padding:4px 0">No picks submitted yet.</p>`;
       return;
     }
     const rs=results||[];
@@ -519,46 +683,38 @@ async function loadLeaderboard(){
       </div>`).join('');
 
     if(!appSettings.picks_locked){
-      cel.innerHTML=`<p style="color:#aaa;font-size:13px;font-style:italic;padding:4px 0">Champion picks revealed when tournament begins.</p>`;
+      cel.innerHTML=`<p style="color:#aaa;font-size:13px;font-style:italic">Champion picks revealed when tournament begins.</p>`;
     } else {
       const rM=rs.find(r=>r.round==='champion_m');
       const rW=rs.find(r=>r.round==='champion_w');
       cel.innerHTML=`<div class="two-col">
-        <div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:8px">👨 Men's</div>
-          ${scored.map(p=>{const ok=rM&&p.mens_champion===rM.winner;return`<div class="pick-item"><span>${p.name}</span><span style="font-size:12px">${p.mens_champion||'—'}</span><span class="pr ${rM?(ok?'correct':'incorrect'):'pending'}">${rM?(ok?'✅ +25':'❌'):'⏳'}</span></div>`;}).join('')}
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:7px">👨 Men's</div>
+          ${scored.map(p=>{const ok=rM&&p.mens_champion===rM.winner;return`<div class="pick-item"><span>${p.name}</span><span style="font-size:11px">${p.mens_champion||'—'}</span><span class="pr ${rM?(ok?'correct':'incorrect'):'pending'}">${rM?(ok?'✅ +25':'❌'):'⏳'}</span></div>`;}).join('')}
         </div>
-        <div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:8px">👩 Women's</div>
-          ${scored.map(p=>{const ok=rW&&p.womens_champion===rW.winner;return`<div class="pick-item"><span>${p.name}</span><span style="font-size:12px">${p.womens_champion||'—'}</span><span class="pr ${rW?(ok?'correct':'incorrect'):'pending'}">${rW?(ok?'✅ +25':'❌'):'⏳'}</span></div>`;}).join('')}
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:7px">👩 Women's</div>
+          ${scored.map(p=>{const ok=rW&&p.womens_champion===rW.winner;return`<div class="pick-item"><span>${p.name}</span><span style="font-size:11px">${p.womens_champion||'—'}</span><span class="pr ${rW?(ok?'correct':'incorrect'):'pending'}">${rW?(ok?'✅ +25':'❌'):'⏳'}</span></div>`;}).join('')}
         </div></div>`;
     }
   }catch(e){
-    el.innerHTML=`<div class="alert alert-error" style="margin:14px">Error loading: ${e.message}</div>`;
+    el.innerHTML=`<div class="alert alert-error" style="margin:14px">Error: ${e.message}</div>`;
   }
 }
 
-// Scoring: check each round's picks (stored as JSON arrays) against results
 function calcScore(pick,results){
   let bracket=0,champ=0;
   ROUNDS.forEach(round=>{
-    const pts=ROUND_PTS[round];
-    const bonus=SETS_BONUS[round];
-    // mens
+    const pts=ROUND_PTS[round],bonus=SETS_BONUS[round];
     const mRes=results.find(r=>r.round===`mens_${round}`);
     if(mRes){
-      let mPicks=[];
-      try{mPicks=JSON.parse(pick.mens_bracket||'{}')[round]||[];}catch(e){}
-      const correct=mPicks.filter(p=>p===mRes.winner).length;
-      bracket+=correct*pts;
-      if(mRes.straight_sets&&correct>0)bracket+=bonus;
+      let mp=[];try{mp=(JSON.parse(pick.mens_bracket||'{}')[round]||[]);}catch(e){}
+      const c=mp.filter(p=>p===mRes.winner).length;
+      bracket+=c*pts;if(mRes.straight_sets&&c>0)bracket+=bonus;
     }
-    // womens
     const wRes=results.find(r=>r.round===`womens_${round}`);
     if(wRes){
-      let wPicks=[];
-      try{wPicks=JSON.parse(pick.womens_bracket||'{}')[round]||[];}catch(e){}
-      const correct=wPicks.filter(p=>p===wRes.winner).length;
-      bracket+=correct*pts;
-      if(wRes.straight_sets&&correct>0)bracket+=bonus;
+      let wp=[];try{wp=(JSON.parse(pick.womens_bracket||'{}')[round]||[]);}catch(e){}
+      const c=wp.filter(p=>p===wRes.winner).length;
+      bracket+=c*pts;if(wRes.straight_sets&&c>0)bracket+=bonus;
     }
   });
   const cM=results.find(r=>r.round==='champion_m');
@@ -568,80 +724,170 @@ function calcScore(pick,results){
   return{bracket,champ,total:bracket+champ};
 }
 
-// ── BRACKET UI ────────────────────────────────────────────────────
-function switchTab(gender,el){
-  document.querySelectorAll('.btab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('mensUI').style.display=gender==='mens'?'block':'none';
-  document.getElementById('womensUI').style.display=gender==='womens'?'block':'none';
-  updateProgress();
-}
+// ════════════════════════════════════════
+// VISUAL BRACKET ENGINE
+// ════════════════════════════════════════
+const CARD_H=36;   // px height of each player slot
+const CARD_W=148;  // px width of each card
+const GAP=32;      // px between rounds (connector width)
+const VS_H=8;      // px height of VS bar
 
-function buildBracketUI(){
-  buildGender('mens',MENS_R1,'mensUI');
-  buildGender('womens',WOMENS_R1,'womensUI');
+function buildBrackets(){
+  buildBracket('mens',MENS_R1,'mensBracket');
+  buildBracket('womens',WOMENS_R1,'womensBracket');
   populateChampDropdowns();
 }
 
-function buildGender(gender,r1Data,containerId){
-  const container=document.getElementById(containerId);
-  container.innerHTML='';
+function buildBracket(gender,r1Data,containerId){
+  const canvas=document.getElementById(containerId);
+  canvas.innerHTML='';
+
+  // Calculate vertical spacing for each round
+  // R1: matchHeight = CARD_H*2 + VS_H, spacing between matches = 4px
+  // Each subsequent round: matches are spaced to align with their two feeder matches
+  const r1MatchH = CARD_H*2+VS_H;
+  const r1Gap = 6; // gap between R1 matches
+
+  ROUNDS.forEach((round,ri)=>{
+    const matchCount = r1Data.length / Math.pow(2,ri);
+    const col = document.createElement('div');
+    col.className='b-round-col';
+    col.id=`col_${gender}_${round}`;
+    col.style.cssText=`position:relative;`;
+
+    // Round label
+    const lbl=document.createElement('div');
+    lbl.className='b-round-label';
+    lbl.innerHTML=`${RNAMES[round]}<span class="b-round-pts">${ROUND_PTS[round]}pt</span>`;
+    col.appendChild(lbl);
+
+    // Matches container
+    const matchesEl=document.createElement('div');
+    matchesEl.id=`matches_${gender}_${round}`;
+    matchesEl.style.cssText='display:flex;flex-direction:column;position:relative;';
+    col.appendChild(matchesEl);
+
+    canvas.appendChild(col);
+
+    // Add connector column after each round except the last
+    if(ri < ROUNDS.length-1){
+      const conn=document.createElement('div');
+      conn.className='b-connector';
+      conn.id=`conn_${gender}_${round}`;
+      conn.style.cssText=`width:${GAP}px;flex-shrink:0;`;
+      canvas.appendChild(conn);
+    }
+  });
+
+  // Render all rounds
+  renderBracket(gender,r1Data);
+  drawConnectors(gender,r1Data);
+}
+
+function renderBracket(gender,r1Data){
   ROUNDS.forEach((round,ri)=>{
     const matchCount=r1Data.length/Math.pow(2,ri);
-    const block=document.createElement('div');
-    block.className='round-block';
-    block.id=`block_${gender}_${round}`;
-    const pts=ROUND_PTS[round],bonus=SETS_BONUS[round];
-    block.innerHTML=`
-      <div class="round-hdr">
-        <div class="round-title">${RNAMES[round]}</div>
-        <div class="round-pts-tag">${pts}pt${pts>1?'s':''} · +${bonus} str. sets</div>
-      </div>
-      ${ri>0?`<div class="round-locked-msg" id="lockedMsg_${gender}_${round}">Complete ${RNAMES[ROUNDS[ri-1]]} first to unlock this round</div>`:''}
-      <div id="matches_${gender}_${round}"></div>`;
-    container.appendChild(block);
+    const container=document.getElementById(`matches_${gender}_${round}`);
+    if(!container)return;
+    container.innerHTML='';
+
+    // Vertical spacing: each match occupies a "slot" that is 2^ri times the R1 match height+gap
+    const r1SlotH = CARD_H*2+VS_H+6;
+    const slotH = r1SlotH * Math.pow(2,ri);
+    const matchH = CARD_H*2+VS_H;
+    const topPad = (slotH-matchH)/2;
+
+    for(let m=0;m<matchCount;m++){
+      const p1=getPlayer(gender,round,m,0,r1Data);
+      const p2=getPlayer(gender,round,m,1,r1Data);
+      const sel=picks[gender][round][m];
+
+      const wrap=document.createElement('div');
+      wrap.className='b-match-wrap';
+      wrap.style.cssText=`height:${slotH}px;justify-content:center;padding-top:${topPad}px;`;
+
+      const matchEl=document.createElement('div');
+      matchEl.style.cssText='display:flex;flex-direction:column;';
+
+      matchEl.appendChild(makeSlot(gender,round,m,p1,0,sel));
+      const vsEl=document.createElement('div');
+      vsEl.className='b-vs';
+      vsEl.textContent='VS';
+      matchEl.appendChild(vsEl);
+      matchEl.appendChild(makeSlot(gender,round,m,p2,1,sel));
+
+      wrap.appendChild(matchEl);
+      container.appendChild(wrap);
+    }
+
+    // Apply locking
+    const col=document.getElementById(`col_${gender}_${round}`);
+    if(ri>0&&col){
+      const prevRound=ROUNDS[ri-1];
+      const prevCount=r1Data.length/Math.pow(2,ri-1);
+      const prevDone=picks[gender][prevRound].slice(0,prevCount).filter(Boolean).length>=prevCount;
+      col.classList.toggle('locked',!prevDone);
+    }
   });
-  renderAllRounds(gender,r1Data);
-  applyLocking(gender,r1Data);
 }
 
-function renderAllRounds(gender,r1Data){
-  ROUNDS.forEach(round=>renderRound(gender,round,r1Data));
-}
+function makeSlot(gender,round,matchIdx,player,slot,selectedName){
+  const el=document.createElement('div');
+  el.className='b-slot';
 
-function renderRound(gender,round,r1Data){
-  const ri=ROUNDS.indexOf(round);
-  const matchCount=r1Data.length/Math.pow(2,ri);
-  const container=document.getElementById(`matches_${gender}_${round}`);
-  if(!container)return;
-  container.innerHTML='';
-  for(let m=0;m<matchCount;m++){
-    const p1=getPlayer(gender,round,m,0,r1Data);
-    const p2=getPlayer(gender,round,m,1,r1Data);
-    const sel=picks[gender][round][m];
-    const done=!!sel;
-    const card=document.createElement('div');
-    card.className=`match-card${done?' done':''}`;
-
-    const makeBtn=(player,slot)=>{
-      if(!player){
-        return`<div class="tbd${slot===1?' ':''}" style="${slot===0?'border-bottom:1px solid var(--border)':''}"><span>TBD — waiting on previous round</span></div>`;
-      }
-      const isPicked=sel===player.name;
-      const seedHtml=player.seed?`<span class="spill">${player.seed}</span>`:'';
-      const hasInfo=!!PLAYER_INFO[player.name];
-      const safeName=player.name.replace(/'/g,"\\'");
-      return`<button class="player-btn${isPicked?' picked':''}"
-        onclick="selectPick('${gender}','${round}',${m},'${safeName}')">
-        <span class="nat">${player.nat||''}</span>
-        ${seedHtml}
-        <span class="pname">${player.name}</span>
-        ${isPicked?'<span class="check">✓</span>':(hasInfo?`<button class="info-btn" onclick="event.stopPropagation();showInfo('${safeName}')">ℹ️</button>`:'')}</button>`;
-    };
-
-    card.innerHTML=makeBtn(p1,0)+'<div class="vs-div">VS</div>'+makeBtn(p2,1);
-    container.appendChild(card);
+  if(!player){
+    el.classList.add('b-tbd');
+    el.textContent='TBD';
+    return el;
   }
+
+  const isPicked=selectedName===player.name;
+  if(isPicked) el.classList.add('b-picked');
+
+  const safeName=player.name.replace(/'/g,"\\'");
+
+  if(player.seed){
+    const s=document.createElement('span');
+    s.className='b-seed';s.textContent=player.seed;
+    el.appendChild(s);
+  }
+  if(player.nat){
+    const n=document.createElement('span');
+    n.className='b-nat';n.textContent=player.nat;
+    el.appendChild(n);
+  }
+  const nm=document.createElement('span');
+  nm.className='b-name';
+  // Shorten long names for display
+  nm.textContent=shortName(player.name);
+  nm.title=player.name;
+  el.appendChild(nm);
+
+  if(isPicked){
+    const ck=document.createElement('span');
+    ck.className='b-check';ck.textContent='✓';
+    el.appendChild(ck);
+  }
+
+  el.onclick=()=>selectPick(gender,round,matchIdx,player.name);
+
+  // Info button for known players
+  if(PLAYER_INFO[player.name]&&!isPicked){
+    el.title=`Tap to pick · long press for info`;
+    let pressTimer;
+    el.addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>showInfo(player.name),500);},{passive:true});
+    el.addEventListener('touchend',()=>clearTimeout(pressTimer),{passive:true});
+  }
+
+  return el;
+}
+
+function shortName(name){
+  // Abbreviate first name to initial for long names
+  if(name.length<=18)return name;
+  const parts=name.split(' ');
+  if(parts.length>=2)return parts[0][0]+'. '+parts.slice(1).join(' ');
+  return name;
 }
 
 function getPlayer(gender,round,matchIdx,slot,r1Data){
@@ -651,25 +897,22 @@ function getPlayer(gender,round,matchIdx,slot,r1Data){
   const prevMatchIdx=matchIdx*2+slot;
   const prevPick=picks[gender][prevRound][prevMatchIdx];
   if(!prevPick)return null;
-  // Try to get nat from r1Data by name
-  const nat=findNat(gender,prevPick,r1Data);
+  const nat=findNat(prevPick,r1Data);
   return{name:prevPick,seed:null,nat};
 }
 
-function findNat(gender,name,r1Data){
-  for(const match of r1Data){for(const p of match){if(p.name===name)return p.nat;}}
+function findNat(name,r1Data){
+  for(const m of r1Data)for(const p of m)if(p.name===name)return p.nat;
   return'';
 }
 
 function selectPick(gender,round,matchIdx,playerName){
   picks[gender][round][matchIdx]=playerName;
-  // Clear downstream picks affected by this change
   const ri=ROUNDS.indexOf(round);
   clearDownstream(gender,ri+1,Math.floor(matchIdx/2));
   const r1Data=gender==='mens'?MENS_R1:WOMENS_R1;
-  // Re-render from this round onwards
-  for(let i=ri;i<ROUNDS.length;i++)renderRound(gender,ROUNDS[i],r1Data);
-  applyLocking(gender,r1Data);
+  renderBracket(gender,r1Data);
+  drawConnectors(gender,r1Data);
   updateProgress();
 }
 
@@ -681,30 +924,93 @@ function clearDownstream(gender,fromRi,fromMatch){
   }
 }
 
-function applyLocking(gender,r1Data){
+// Draw SVG connector lines between rounds
+function drawConnectors(gender,r1Data){
   ROUNDS.forEach((round,ri)=>{
-    if(ri===0)return;
-    const prevRound=ROUNDS[ri-1];
-    const prevMatchCount=r1Data.length/Math.pow(2,ri-1);
-    const prevDone=picks[gender][prevRound].slice(0,prevMatchCount).filter(Boolean).length>=prevMatchCount;
-    const block=document.getElementById(`block_${gender}_${round}`);
-    const msg=document.getElementById(`lockedMsg_${gender}_${round}`);
-    if(block){
-      block.classList.toggle('round-locked',!prevDone);
-      if(msg)msg.style.display=prevDone?'none':'block';
+    if(ri>=ROUNDS.length-1)return;
+    const connEl=document.getElementById(`conn_${gender}_${round}`);
+    if(!connEl)return;
+
+    const r1SlotH=CARD_H*2+VS_H+6;
+    const thisSlotH=r1SlotH*Math.pow(2,ri);
+    const nextSlotH=r1SlotH*Math.pow(2,ri+1);
+    const matchH=CARD_H*2+VS_H;
+    const matchCount=r1Data.length/Math.pow(2,ri);
+    const totalH=matchCount*thisSlotH;
+
+    connEl.style.height=totalH+'px';
+    connEl.style.position='relative';
+    connEl.style.marginTop=(document.getElementById(`col_${gender}_${round}`)?.querySelector('.b-round-label')?.offsetHeight||20)+'px';
+
+    // Build SVG
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width',GAP);svg.setAttribute('height',totalH);
+    svg.style.cssText='position:absolute;top:0;left:0;overflow:visible;';
+
+    // For each pair of matches in current round, draw lines to next round match
+    const nextMatchCount=matchCount/2;
+    for(let nm=0;nm<nextMatchCount;nm++){
+      const m1=nm*2;const m2=nm*2+1;
+      const thisPad=(thisSlotH-matchH)/2;
+      const nextPad=(nextSlotH-matchH)/2;
+
+      // Y center of match m1 bottom slot
+      const y1=m1*thisSlotH+thisPad+CARD_H+VS_H+CARD_H/2;
+      // Y center of match m2 top slot
+      const y2=m2*thisSlotH+thisPad+CARD_H/2;
+      // Y center of next round match top slot
+      const yNext=nm*nextSlotH+nextPad+CARD_H/2;
+      // Y center of next round match bottom slot
+      const yNext2=nm*nextSlotH+nextPad+CARD_H+VS_H+CARD_H/2;
+      const yMid=(yNext+yNext2)/2;
+
+      const col=picks[gender][round][m1]?'#1a5c38':'#ccc';
+      const col2=picks[gender][round][m2]?'#1a5c38':'#ccc';
+
+      // Line from m1 winner right
+      addLine(svg,0,y1,GAP/2,y1,col);
+      // Line from m2 winner right
+      addLine(svg,0,y2,GAP/2,y2,col2);
+      // Vertical join
+      addLine(svg,GAP/2,y1,GAP/2,y2,'#ccc');
+      // Line to next round
+      addLine(svg,GAP/2,yMid,GAP,yMid,(picks[gender][round][m1]&&picks[gender][round][m2])?'#1a5c38':'#ccc');
     }
+
+    connEl.innerHTML='';
+    connEl.appendChild(svg);
   });
+}
+
+function addLine(svg,x1,y1,x2,y2,color){
+  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1',x1);line.setAttribute('y1',y1);
+  line.setAttribute('x2',x2);line.setAttribute('y2',y2);
+  line.setAttribute('stroke',color);line.setAttribute('stroke-width','1.5');
+  svg.appendChild(line);
+}
+
+// Champion slot update
+function updateChampSlot(gender){
+  const finalPick=picks[gender].f[0]||picks[gender].f[1]||null;
+  // show in champ dropdown if they haven't picked
 }
 
 function updateProgress(){
   let made=0;
-  ['mens','womens'].forEach(g=>{
-    ROUNDS.forEach(r=>{made+=picks[g][r].filter(Boolean).length;});
-  });
+  ['mens','womens'].forEach(g=>{ROUNDS.forEach(r=>{made+=picks[g][r].filter(Boolean).length;});});
   const total=126;
   const pct=Math.round(made/total*100);
   document.getElementById('progFill').style.width=pct+'%';
-  document.getElementById('progLabel').textContent=`${made} of ${total} picks made`;
+  document.getElementById('progLabel').textContent=`${made} of ${total} bracket picks made`;
+}
+
+function switchTab(gender,el){
+  document.querySelectorAll('.btab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mensWrapper').style.display=gender==='mens'?'block':'none';
+  document.getElementById('womensWrapper').style.display=gender==='womens'?'block':'none';
+  updateProgress();
 }
 
 function populateChampDropdowns(){
@@ -720,8 +1026,6 @@ function populateChampDropdowns(){
 async function submitPicks(){
   const name=document.getElementById('participantName').value.trim();
   if(!name){showAlert('Please enter your name.');return;}
-
-  // Validate all picks complete
   for(const gender of['mens','womens']){
     const r1Data=gender==='mens'?MENS_R1:WOMENS_R1;
     for(const round of ROUNDS){
@@ -736,24 +1040,13 @@ async function submitPicks(){
       }
     }
   }
-
-  // Build bracket objects
-  const mensBracket={};
-  const womensBracket={};
+  const mensBracket={},womensBracket={};
   ROUNDS.forEach(r=>{
     const ri=ROUNDS.indexOf(r);
     mensBracket[r]=picks.mens[r].slice(0,MENS_R1.length/Math.pow(2,ri)).filter(Boolean);
     womensBracket[r]=picks.womens[r].slice(0,WOMENS_R1.length/Math.pow(2,ri)).filter(Boolean);
   });
-
-  const payload={
-    name,
-    mens_bracket:JSON.stringify(mensBracket),
-    womens_bracket:JSON.stringify(womensBracket),
-    mens_champion:document.getElementById('mensChampPick').value||null,
-    womens_champion:document.getElementById('womensChampPick').value||null,
-  };
-
+  const payload={name,mens_bracket:JSON.stringify(mensBracket),womens_bracket:JSON.stringify(womensBracket),mens_champion:document.getElementById('mensChampPick').value||null,womens_champion:document.getElementById('womensChampPick').value||null};
   const btn=document.getElementById('submitBtn');
   btn.disabled=true;btn.textContent='Submitting...';
   try{
@@ -761,47 +1054,15 @@ async function submitPicks(){
     document.getElementById('submitForm').style.display='none';
     document.getElementById('submitDone').style.display='block';
   }catch(e){
-    showAlert('Error submitting: '+e.message);
+    showAlert('Error: '+e.message);
     btn.disabled=false;btn.textContent='Submit My Bracket';
   }
 }
 
 function showAlert(msg){
-  document.getElementById('submitAlert').innerHTML=`<div class="alert alert-error">${msg}</div>`;
-  document.getElementById('submitAlert').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-// ── DRAW VIEW ─────────────────────────────────────────────────────
-function switchDrawTab(gender,el){
-  document.querySelectorAll('#view-draw .btab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('drawMens').style.display=gender==='mens'?'block':'none';
-  document.getElementById('drawWomens').style.display=gender==='womens'?'block':'none';
-}
-function renderDraw(){
-  if(document.getElementById('mensDrawContent').innerHTML)return;
-  renderDrawSection('mensDrawContent',MENS_R1);
-  renderDrawSection('womensDrawContent',WOMENS_R1);
-}
-function renderDrawSection(id,r1Data){
-  const el=document.getElementById(id);
-  let html=`<div class="draw-hdr"><span>Round 1 — First Round</span><span class="pts-tag">1 pt each</span></div>`;
-  r1Data.forEach(match=>{
-    html+=`<div class="draw-match">
-      <div class="draw-p" onclick="showInfo('${match[0].name.replace(/'/g,"\\'")}')">
-        ${match[0].seed?`<span class="spill">${match[0].seed}</span>`:''}
-        <span>${match[0].nat}</span><span>${match[0].name}</span>
-        ${PLAYER_INFO[match[0].name]?'<span style="margin-left:auto;font-size:12px;opacity:0.5">ℹ️</span>':''}
-      </div>
-      <div class="draw-vs">vs</div>
-      <div class="draw-p" onclick="showInfo('${match[1].name.replace(/'/g,"\\'")}')">
-        ${match[1].seed?`<span class="spill">${match[1].seed}</span>`:''}
-        <span>${match[1].nat}</span><span>${match[1].name}</span>
-        ${PLAYER_INFO[match[1].name]?'<span style="margin-left:auto;font-size:12px;opacity:0.5">ℹ️</span>':''}
-      </div>
-    </div>`;
-  });
-  el.innerHTML=html;
+  const el=document.getElementById('submitAlert');
+  el.innerHTML=`<div class="alert alert-error">${msg}</div>`;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ── PLAYER MODAL ──────────────────────────────────────────────────
@@ -818,10 +1079,23 @@ function showInfo(name){
 }
 function closeModal(){document.getElementById('playerModal').classList.remove('open');}
 
+// ── DRAG TO SCROLL ────────────────────────────────────────────────
+function enableDragScroll(el){
+  let isDown=false,startX,scrollLeft;
+  el.addEventListener('mousedown',e=>{isDown=true;el.style.cursor='grabbing';startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
+  el.addEventListener('mouseleave',()=>{isDown=false;el.style.cursor='grab';});
+  el.addEventListener('mouseup',()=>{isDown=false;el.style.cursor='grab';});
+  el.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX)*1.5;});
+}
+
 // ── INIT ──────────────────────────────────────────────────────────
 async function init(){
   await loadSettings();
-  if(!appSettings.picks_locked)buildBracketUI();
+  if(!appSettings.picks_locked){
+    buildBrackets();
+    enableDragScroll(document.getElementById('mensBracketOuter'));
+    enableDragScroll(document.getElementById('womensBracketOuter'));
+  }
   loadLeaderboard();
   document.getElementById('playerModal').addEventListener('click',e=>{if(e.target===document.getElementById('playerModal'))closeModal();});
 }
