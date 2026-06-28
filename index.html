@@ -601,8 +601,8 @@ const PLAYER_INFO={
 
 // ── STATE ─────────────────────────────────────────────────────────
 const picks={
-  mens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(2).fill(null)},
-  womens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(2).fill(null)}
+  mens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(1).fill(null)},
+  womens:{r1:Array(64).fill(null),r2:Array(32).fill(null),r3:Array(16).fill(null),qf:Array(8).fill(null),sf:Array(4).fill(null),f:Array(1).fill(null)}
 };
 let appSettings={picks_locked:false};
 
@@ -772,7 +772,7 @@ function buildBracket(gender,r1Data,containerId){
 
 function renderBracket(gender,r1Data){
   ROUNDS.forEach((round,ri)=>{
-    const matchCount=r1Data.length/Math.pow(2,ri);
+    const matchCount=round==='f'?1:r1Data.length/Math.pow(2,ri);
     const container=document.getElementById(`matches_${gender}_${round}`);
     if(!container)return;
     container.innerHTML='';
@@ -810,7 +810,7 @@ function renderBracket(gender,r1Data){
     const col=document.getElementById(`col_${gender}_${round}`);
     if(ri>0&&col){
       const prevRound=ROUNDS[ri-1];
-      const prevCount=r1Data.length/Math.pow(2,ri-1);
+      const prevCount=round==='f'?2:r1Data.length/Math.pow(2,ri-1);
       const prevDone=picks[gender][prevRound].slice(0,prevCount).filter(Boolean).length>=prevCount;
       col.classList.toggle('locked',!prevDone);
     }
@@ -907,7 +907,8 @@ function selectPick(gender,round,matchIdx,playerName){
 function clearDownstream(gender,fromRi,fromMatch){
   for(let ri=fromRi;ri<ROUNDS.length;ri++){
     const round=ROUNDS[ri];
-    for(let m=fromMatch;m<picks[gender][round].length;m++)picks[gender][round][m]=null;
+    const maxM=round==='f'?1:picks[gender][round].length;
+    for(let m=fromMatch;m<maxM;m++)picks[gender][round][m]=null;
     fromMatch=Math.floor(fromMatch/2);
   }
 }
@@ -927,7 +928,7 @@ function drawConnectors(gender,r1Data){
       const thisSlotH=r1SlotH*Math.pow(2,ri);
       const nextSlotH=r1SlotH*Math.pow(2,ri+1);
       const matchH=CARD_H*2+VS_H;
-      const matchCount=r1Data.length/Math.pow(2,ri);
+      const matchCount=round==='f'?1:r1Data.length/Math.pow(2,ri);
       const totalH=matchCount*thisSlotH;
 
       connEl.style.cssText=`width:${GAP}px;flex-shrink:0;position:relative;height:${totalH}px;margin-top:${labelH}px;align-self:flex-start;`;
@@ -1000,7 +1001,7 @@ function updateChampionDisplay(){
 function updateProgress(){
   let made=0;
   ['mens','womens'].forEach(g=>{ROUNDS.forEach(r=>{made+=picks[g][r].filter(Boolean).length;});});
-  const total=126;
+  const total=250;
   const pct=Math.round(made/total*100);
   document.getElementById('progFill').style.width=pct+'%';
   document.getElementById('progLabel').textContent=`${made} of ${total} bracket picks made`;
@@ -1026,7 +1027,7 @@ async function submitPicks(){
     const r1Data=gender==='mens'?MENS_R1:WOMENS_R1;
     for(const round of ROUNDS){
       const ri=ROUNDS.indexOf(round);
-      const needed=r1Data.length/Math.pow(2,ri);
+      const needed=round==='f'?1:r1Data.length/Math.pow(2,ri);
       const made=picks[gender][round].slice(0,needed).filter(Boolean).length;
       if(made<needed){
         const gl=gender==='mens'?"Men's":"Women's";
@@ -1039,8 +1040,9 @@ async function submitPicks(){
   const mensBracket={},womensBracket={};
   ROUNDS.forEach(r=>{
     const ri=ROUNDS.indexOf(r);
-    mensBracket[r]=picks.mens[r].slice(0,MENS_R1.length/Math.pow(2,ri)).filter(Boolean);
-    womensBracket[r]=picks.womens[r].slice(0,WOMENS_R1.length/Math.pow(2,ri)).filter(Boolean);
+    const cnt=r==='f'?1:MENS_R1.length/Math.pow(2,ri);
+    mensBracket[r]=picks.mens[r].slice(0,cnt).filter(Boolean);
+    womensBracket[r]=picks.womens[r].slice(0,cnt).filter(Boolean);
   });
   const payload={name,mens_bracket:JSON.stringify(mensBracket),womens_bracket:JSON.stringify(womensBracket),mens_champion:picks.mens.f[0]||picks.mens.f[1]||null,womens_champion:picks.womens.f[0]||picks.womens.f[1]||null};
   const btn=document.getElementById('submitBtn');
