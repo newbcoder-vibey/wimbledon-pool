@@ -87,10 +87,7 @@ body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--tex
 .prog-fill{background:linear-gradient(90deg,var(--green),var(--green-light));height:100%;border-radius:20px;transition:width 0.4s;}
 .prog-label{font-size:11px;color:var(--text-light);margin-bottom:12px;font-weight:500;}
 
-/* ── CHAMP BOX ── */
-.champ-box{background:linear-gradient(135deg,#fdf4e0,#fef9ee);border:1.5px solid var(--gold);border-radius:10px;padding:14px;margin-bottom:12px;}
-.champ-box h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--green-dark);margin-bottom:2px;}
-.champ-box p{font-size:11px;color:var(--text-light);margin-bottom:8px;}
+
 
 /* ── SCORING TABLE ── */
 .stbl{width:100%;border-collapse:collapse;font-size:13px;}
@@ -355,19 +352,7 @@ body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--tex
             <label>Your Name</label>
             <input type="text" id="participantName" placeholder="Enter your name"/>
           </div>
-          <div class="sec-div">🏆 Champion Picks (+25 pts each)</div>
-          <div class="two-col">
-            <div class="champ-box">
-              <h4>👨 Men's Champion</h4>
-              <p>Who lifts the trophy July 13? +25 pts if correct.</p>
-              <div class="form-group" style="margin:0"><select id="mensChampPick"><option value="">— Pick champion —</option></select></div>
-            </div>
-            <div class="champ-box">
-              <h4>👩 Women's Champion</h4>
-              <p>Who wins Centre Court July 12? +25 pts if correct.</p>
-              <div class="form-group" style="margin:0"><select id="womensChampPick"><option value="">— Pick champion —</option></select></div>
-            </div>
-          </div>
+          <div class="alert alert-info" style="margin-top:4px">🏆 Your champion picks are set automatically from whoever you pick to win the Final — worth +25 bonus points each.</div>
         </div>
       </div>
 
@@ -387,7 +372,8 @@ body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--tex
             <button class="btab" onclick="switchTab('womens',this)">👩 Women's Singles</button>
           </div>
 
-          <div class="scroll-hint">← scroll sideways to see later rounds →</div>
+          <div id="champDisplay"></div>
+          <div class="scroll-hint" style="margin-top:8px">← scroll sideways to see later rounds →</div>
 
           <div id="mensWrapper">
             <div class="bracket-outer" id="mensBracketOuter">
@@ -914,6 +900,8 @@ function selectPick(gender,round,matchIdx,playerName){
   renderBracket(gender,r1Data);
   drawConnectors(gender,r1Data);
   updateProgress();
+  // Auto-set champion from Final picks
+  updateChampionDisplay();
 }
 
 function clearDownstream(gender,fromRi,fromMatch){
@@ -926,59 +914,59 @@ function clearDownstream(gender,fromRi,fromMatch){
 
 // Draw SVG connector lines between rounds
 function drawConnectors(gender,r1Data){
-  ROUNDS.forEach((round,ri)=>{
-    if(ri>=ROUNDS.length-1)return;
-    const connEl=document.getElementById(`conn_${gender}_${round}`);
-    if(!connEl)return;
+  // Use requestAnimationFrame so DOM has rendered and we can read label heights
+  requestAnimationFrame(()=>{
+    ROUNDS.forEach((round,ri)=>{
+      if(ri>=ROUNDS.length-1)return;
+      const connEl=document.getElementById(`conn_${gender}_${round}`);
+      const colEl=document.getElementById(`col_${gender}_${round}`);
+      if(!connEl||!colEl)return;
 
-    const r1SlotH=CARD_H*2+VS_H+6;
-    const thisSlotH=r1SlotH*Math.pow(2,ri);
-    const nextSlotH=r1SlotH*Math.pow(2,ri+1);
-    const matchH=CARD_H*2+VS_H;
-    const matchCount=r1Data.length/Math.pow(2,ri);
-    const totalH=matchCount*thisSlotH;
+      const labelH=colEl.querySelector('.b-round-label')?.offsetHeight||22;
+      const r1SlotH=CARD_H*2+VS_H+6;
+      const thisSlotH=r1SlotH*Math.pow(2,ri);
+      const nextSlotH=r1SlotH*Math.pow(2,ri+1);
+      const matchH=CARD_H*2+VS_H;
+      const matchCount=r1Data.length/Math.pow(2,ri);
+      const totalH=matchCount*thisSlotH;
 
-    connEl.style.height=totalH+'px';
-    connEl.style.position='relative';
-    connEl.style.marginTop=(document.getElementById(`col_${gender}_${round}`)?.querySelector('.b-round-label')?.offsetHeight||20)+'px';
+      connEl.style.cssText=`width:${GAP}px;flex-shrink:0;position:relative;height:${totalH}px;margin-top:${labelH}px;align-self:flex-start;`;
 
-    // Build SVG
-    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('width',GAP);svg.setAttribute('height',totalH);
-    svg.style.cssText='position:absolute;top:0;left:0;overflow:visible;';
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('width',GAP);
+      svg.setAttribute('height',totalH);
+      svg.style.cssText='position:absolute;top:0;left:0;';
 
-    // For each pair of matches in current round, draw lines to next round match
-    const nextMatchCount=matchCount/2;
-    for(let nm=0;nm<nextMatchCount;nm++){
-      const m1=nm*2;const m2=nm*2+1;
-      const thisPad=(thisSlotH-matchH)/2;
-      const nextPad=(nextSlotH-matchH)/2;
+      const nextMatchCount=matchCount/2;
+      for(let nm=0;nm<nextMatchCount;nm++){
+        const m1=nm*2;const m2=nm*2+1;
+        const thisPad=(thisSlotH-matchH)/2;
+        const nextPad=(nextSlotH-matchH)/2;
 
-      // Y center of match m1 bottom slot
-      const y1=m1*thisSlotH+thisPad+CARD_H+VS_H+CARD_H/2;
-      // Y center of match m2 top slot
-      const y2=m2*thisSlotH+thisPad+CARD_H/2;
-      // Y center of next round match top slot
-      const yNext=nm*nextSlotH+nextPad+CARD_H/2;
-      // Y center of next round match bottom slot
-      const yNext2=nm*nextSlotH+nextPad+CARD_H+VS_H+CARD_H/2;
-      const yMid=(yNext+yNext2)/2;
+        // Y midpoint of the BOTTOM slot of match m1 (winner exit point)
+        const y1=m1*thisSlotH+thisPad+CARD_H+VS_H+CARD_H/2;
+        // Y midpoint of the TOP slot of match m2
+        const y2=m2*thisSlotH+thisPad+CARD_H/2;
+        // Y midpoint of TOP slot of next-round match
+        const yNext=nm*nextSlotH+nextPad+CARD_H/2;
+        // Y midpoint of BOTTOM slot of next-round match
+        const yNext2=nm*nextSlotH+nextPad+CARD_H+VS_H+CARD_H/2;
+        // Vertical center of next match = where the incoming line meets
+        const yMid=(yNext+yNext2)/2;
 
-      const col=picks[gender][round][m1]?'#1a5c38':'#ccc';
-      const col2=picks[gender][round][m2]?'#1a5c38':'#ccc';
+        const c1=picks[gender][round][m1]?'#1a5c38':'#d0ccc8';
+        const c2=picks[gender][round][m2]?'#1a5c38':'#d0ccc8';
+        const cBoth=(picks[gender][round][m1]&&picks[gender][round][m2])?'#1a5c38':'#d0ccc8';
 
-      // Line from m1 winner right
-      addLine(svg,0,y1,GAP/2,y1,col);
-      // Line from m2 winner right
-      addLine(svg,0,y2,GAP/2,y2,col2);
-      // Vertical join
-      addLine(svg,GAP/2,y1,GAP/2,y2,'#ccc');
-      // Line to next round
-      addLine(svg,GAP/2,yMid,GAP,yMid,(picks[gender][round][m1]&&picks[gender][round][m2])?'#1a5c38':'#ccc');
-    }
+        addLine(svg,0,y1,GAP/2,y1,c1);           // m1 winner exits right
+        addLine(svg,0,y2,GAP/2,y2,c2);           // m2 winner exits right
+        addLine(svg,GAP/2,y1,GAP/2,y2,'#d0ccc8'); // vertical bridge
+        addLine(svg,GAP/2,yMid,GAP,yMid,cBoth);  // line into next match
+      }
 
-    connEl.innerHTML='';
-    connEl.appendChild(svg);
+      connEl.innerHTML='';
+      connEl.appendChild(svg);
+    });
   });
 }
 
@@ -990,10 +978,23 @@ function addLine(svg,x1,y1,x2,y2,color){
   svg.appendChild(line);
 }
 
-// Champion slot update
-function updateChampSlot(gender){
-  const finalPick=picks[gender].f[0]||picks[gender].f[1]||null;
-  // show in champ dropdown if they haven't picked
+// Auto-update champion display from Final picks
+function updateChampionDisplay(){
+  const mChamp=picks.mens.f[0]||picks.mens.f[1]||null;
+  const wChamp=picks.womens.f[0]||picks.womens.f[1]||null;
+  const el=document.getElementById('champDisplay');
+  if(!el)return;
+  el.innerHTML=`
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <div style="flex:1;min-width:160px;background:linear-gradient(135deg,#fdf4e0,#fef9ee);border:1.5px solid var(--gold);border-radius:10px;padding:12px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:4px">👨 Men's Champion</div>
+        <div style="font-size:15px;font-weight:700;color:var(--green-dark)">${mChamp||'<span style="color:#bbb;font-weight:400;font-style:italic">Pick your Final winner</span>'}</div>
+        ${mChamp?'<div style="font-size:11px;color:var(--gold);margin-top:2px">+25 pts if correct ⭐</div>':''}</div>
+      <div style="flex:1;min-width:160px;background:linear-gradient(135deg,#fdf4e0,#fef9ee);border:1.5px solid var(--gold);border-radius:10px;padding:12px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:4px">👩 Women's Champion</div>
+        <div style="font-size:15px;font-weight:700;color:var(--green-dark)">${wChamp||'<span style="color:#bbb;font-weight:400;font-style:italic">Pick your Final winner</span>'}</div>
+        ${wChamp?'<div style="font-size:11px;color:var(--gold);margin-top:2px">+25 pts if correct ⭐</div>':''}</div>
+    </div>`;
 }
 
 function updateProgress(){
@@ -1014,12 +1015,7 @@ function switchTab(gender,el){
 }
 
 function populateChampDropdowns(){
-  const allM=[...new Set(MENS_R1.flat().map(p=>p.name))].sort();
-  const allW=[...new Set(WOMENS_R1.flat().map(p=>p.name))].sort();
-  const ms=document.getElementById('mensChampPick');
-  const ws=document.getElementById('womensChampPick');
-  allM.forEach(n=>ms.innerHTML+=`<option value="${n}">${n}</option>`);
-  allW.forEach(n=>ws.innerHTML+=`<option value="${n}">${n}</option>`);
+  // Champion picks now auto-populated from Final picks — no dropdowns needed
 }
 
 // ── SUBMIT ────────────────────────────────────────────────────────
@@ -1046,7 +1042,7 @@ async function submitPicks(){
     mensBracket[r]=picks.mens[r].slice(0,MENS_R1.length/Math.pow(2,ri)).filter(Boolean);
     womensBracket[r]=picks.womens[r].slice(0,WOMENS_R1.length/Math.pow(2,ri)).filter(Boolean);
   });
-  const payload={name,mens_bracket:JSON.stringify(mensBracket),womens_bracket:JSON.stringify(womensBracket),mens_champion:document.getElementById('mensChampPick').value||null,womens_champion:document.getElementById('womensChampPick').value||null};
+  const payload={name,mens_bracket:JSON.stringify(mensBracket),womens_bracket:JSON.stringify(womensBracket),mens_champion:picks.mens.f[0]||picks.mens.f[1]||null,womens_champion:picks.womens.f[0]||picks.womens.f[1]||null};
   const btn=document.getElementById('submitBtn');
   btn.disabled=true;btn.textContent='Submitting...';
   try{
