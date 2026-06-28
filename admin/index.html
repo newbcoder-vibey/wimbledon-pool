@@ -241,7 +241,7 @@ async function saveSetting(key, value) {
     // Upsert into settings table
     await sbFetch('settings', {
       method: 'POST',
-      prefer: 'resolution=merge-duplicates,return=minimal',
+      prefer: 'resolution=merge-duplicates,return=representation',
       body: JSON.stringify({ key, value: String(value) })
     });
     document.getElementById('settingsAlert').innerHTML = `<div class="alert alert-success">✅ Setting saved.</div>`;
@@ -267,7 +267,7 @@ async function saveResult() {
     try {
       await sbFetch('results', {
         method: 'POST',
-        prefer: 'resolution=merge-duplicates,return=minimal',
+        prefer: 'resolution=merge-duplicates,return=representation',
         body: JSON.stringify({ round: gender === 'mens' ? 'champion_m' : 'champion_w', winner, straight_sets: false })
       });
     } catch(e) {}
@@ -276,7 +276,7 @@ async function saveResult() {
   try {
     await sbFetch('results', {
       method: 'POST',
-      prefer: 'resolution=merge-duplicates,return=minimal',
+      prefer: 'resolution=merge-duplicates,return=representation',
       body: JSON.stringify({ round: roundKey, winner, straight_sets })
     });
     document.getElementById('resultAlert').innerHTML = `<div class="alert alert-success">✅ Result saved: ${winner} won ${ROUND_NAMES[round] || round} (${gender})${straight_sets ? ' — straight sets' : ''}</div>`;
@@ -290,7 +290,7 @@ async function saveResult() {
 async function deleteResult(round) {
   if (!confirm(`Delete result for ${round}?`)) return;
   try {
-    await sbFetch(`results?round=eq.${encodeURIComponent(round)}`, { method: 'DELETE', prefer: 'return=minimal' });
+    await sbFetch(`results?round=eq.${encodeURIComponent(round)}`, { method: 'DELETE', prefer: 'return=representation' });
     loadResults();
   } catch(e) { alert('Error: ' + e.message); }
 }
