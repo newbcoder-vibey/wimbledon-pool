@@ -4,377 +4,448 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Wimbledon 2026 Pool</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #1a5c38; --green-dark: #0f3d25; --gold: #c9a84c;
-    --cream: #faf7f2; --border: #ddd8d0; --text: #1a1814; --text-light: #5a5650;
-    --red: #c0392b; --shadow: 0 4px 24px rgba(0,0,0,0.10);
+    --green-dark: #1a3a2a;
+    --green-mid: #2d5a3d;
+    --gold: #c9a84c;
+    --gold-light: #e8cc80;
+    --cream: #f5f0e8;
+    --border: rgba(255,255,255,0.15);
+    --card-bg: rgba(255,255,255,0.06);
+    --red: #e05555;
+    --green-ok: #4caf7c;
+    --radius: 10px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: #f0ede8; color: var(--text); min-height: 100vh; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--green-dark); color: var(--cream); min-height: 100vh; font-size: 15px; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
   .header {
-    background: linear-gradient(135deg, var(--green-dark), var(--green));
-    color: white; padding: 20px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 3px solid var(--gold);
+    background: #0f2218;
+    border-bottom: 2px solid var(--gold);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
-  .header h1 { font-family: 'Playfair Display', serif; font-size: 22px; }
-  .header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
-  .admin-badge { background: var(--red); color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-  .main { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
-  .card { background: white; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
-  .card-header { background: var(--green); color: white; padding: 13px 18px; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: space-between; }
-  .card-body { padding: 20px; }
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-  .form-group select, .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; background: var(--cream); }
-  .form-group select:focus, .form-group input:focus { outline: none; border-color: var(--green); }
-  .btn { padding: 10px 20px; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-  .btn-green { background: var(--green); color: white; }
-  .btn-green:hover { background: var(--green-dark); }
-  .btn-red { background: var(--red); color: white; }
-  .btn-red:hover { background: #9b2d2d; }
-  .btn-gold { background: var(--gold); color: var(--green-dark); }
-  .btn-full { width: 100%; padding: 13px; font-size: 15px; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media(max-width:600px) { .two-col { grid-template-columns: 1fr; } }
-  .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
-  .alert-success { background: #e8f5ee; color: #1a5c38; border-left: 3px solid #1a5c38; }
-  .alert-error { background: #fdecea; color: #8b1a1a; border-left: 3px solid #c0392b; }
-  .alert-info { background: #fdf4e0; color: #7a5500; border-left: 3px solid #c9a84c; }
-  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .result-row:last-child { border-bottom: none; }
-  .result-round { font-weight: 600; color: var(--green); width: 130px; }
-  .result-winner { flex: 1; }
-  .result-badge { font-size: 10px; padding: 2px 7px; border-radius: 6px; font-weight: 700; }
-  .result-badge.straight { background: #e8e0f5; color: #4a1c6e; }
-  .delete-btn { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 16px; padding: 2px 6px; }
-  .picks-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .picks-table th { background: var(--green-dark); color: white; padding: 8px 10px; text-align: left; font-size: 11px; letter-spacing: 0.5px; }
-  .picks-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
-  .picks-table tr:nth-child(even) td { background: var(--cream); }
-  .login-box { max-width: 380px; margin: 80px auto; background: white; border-radius: 16px; box-shadow: var(--shadow); padding: 32px; text-align: center; }
-  .login-box h2 { font-family: 'Playfair Display', serif; color: var(--green-dark); margin-bottom: 6px; }
-  .login-box p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; margin-bottom: 12px; }
-  .toggle-label h4 { font-weight: 600; font-size: 14px; }
-  .toggle-label p { font-size: 12px; color: var(--text-light); margin-top: 2px; }
-  .toggle { position: relative; display: inline-block; width: 48px; height: 26px; }
+  .header h1 { font-size: 18px; font-weight: 600; }
+  .header .badge {
+    background: rgba(200,60,60,0.25);
+    border: 1px solid rgba(200,60,60,0.5);
+    color: #f08080;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .gate { max-width: 400px; margin: 80px auto; text-align: center; }
+  .gate h2 { margin-bottom: 20px; font-size: 20px; }
+  .gate input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    margin-bottom: 12px;
+  }
+  .gate input:focus { border-color: var(--gold); }
+
+  .btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-gold { background: var(--gold); color: #1a1a1a; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--cream);
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.07); }
+  .btn-red { background: rgba(200,60,60,0.2); border: 1px solid rgba(200,60,60,0.4); color: #f08080; }
+  .btn-green { background: rgba(76,175,124,0.2); border: 1px solid rgba(76,175,124,0.4); color: var(--green-ok); }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .toggle-label { font-size: 15px; }
+  .toggle-sub { font-size: 12px; color: rgba(245,240,232,0.5); margin-top: 3px; }
+
+  .toggle {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+  }
   .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 26px; transition: 0.3s; }
-  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
-  input:checked + .slider { background: var(--green); }
-  input:checked + .slider:before { transform: translateX(22px); }
-  .score-cell { font-weight: 700; color: var(--green); }
-  #loginPage { display: block; }
-  #adminPage { display: none; }
-  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-bottom: 10px; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 28px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--green-ok); }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(24px); }
+
+  label.toggle { cursor: pointer; }
+
+  select {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 14px;
+    margin-bottom: 10px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  select option { background: #1a3a2a; }
+  select:focus { border-color: var(--gold); }
+
+  .result-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .result-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .saved-results { margin-top: 16px; }
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-key { color: rgba(245,240,232,0.5); font-size: 12px; }
+  .result-winner { font-weight: 600; }
+  .result-ss { font-size: 11px; color: var(--gold); margin-left: 6px; }
+
+  .picks-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .picks-table th {
+    text-align: left;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.2);
+    color: rgba(245,240,232,0.5);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .picks-table td {
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: top;
+  }
+  .picks-table tr:last-child td { border-bottom: none; }
+  .pick-list { font-size: 12px; color: rgba(245,240,232,0.65); line-height: 1.7; }
+
+  .status-ok { color: var(--green-ok); font-size: 12px; }
+  .status-err { color: var(--red); font-size: 12px; }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #0f2218;
+    border: 1px solid var(--gold);
+    color: var(--cream);
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage">
-  <div style="background:linear-gradient(135deg,#0f3d25,#1a5c38);min-height:100vh;display:flex;align-items:center;justify-content:center;">
-    <div class="login-box">
-      <div style="font-size:40px;margin-bottom:12px">🎾</div>
-      <h2>Admin Panel</h2>
-      <p>Wimbledon 2026 Family Pool — Commissioner Access</p>
-      <div class="form-group" style="text-align:left">
-        <label>Admin Password</label>
-        <input type="password" id="adminPassword" placeholder="Enter password" onkeyup="if(event.key==='Enter')login()" />
-      </div>
-      <button class="btn btn-green btn-full" onclick="login()">Sign In</button>
-      <div id="loginError"></div>
-    </div>
+<div class="header">
+  <div>
+    <h1>🎾 Wimbledon Pool — Admin</h1>
   </div>
+  <div class="badge">Commissioner</div>
 </div>
 
-<!-- ADMIN PAGE -->
-<div id="adminPage">
-  <div class="header">
-    <div>
-      <h1>🎾 Wimbledon Admin</h1>
-      <div class="header-sub">Commissioner Panel — 2026 Family Pool</div>
+<div id="toast" class="toast"></div>
+
+<!-- PASSWORD GATE -->
+<div id="gate" class="gate">
+  <h2>Admin Access</h2>
+  <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()" autofocus />
+  <button class="btn btn-gold" style="width:100%;" onclick="checkPw()">Enter</button>
+  <div id="pw-err" style="color:#f08080;font-size:13px;margin-top:10px;"></div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin" class="container" style="display:none;">
+
+  <!-- LOCK PICKS -->
+  <div class="card">
+    <div class="card-title">Picks Lock</div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Lock picks</div>
+        <div class="toggle-sub" id="lock-sub">Controls whether players can still edit their team.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="lock-toggle" onchange="saveLock(this.checked)" />
+        <span class="toggle-slider"></span>
+      </label>
     </div>
-    <span class="admin-badge">ADMIN</span>
   </div>
 
-  <div class="main">
+  <!-- ENTER RESULTS -->
+  <div class="card">
+    <div class="card-title">Enter Results</div>
+    <p style="font-size:13px;color:rgba(245,240,232,0.55);margin-bottom:14px;">
+      Enter results for each round as they complete. Round key format: draw_round (e.g. mens_r3, womens_qf).
+    </p>
 
-    <!-- SETTINGS -->
-    <div class="card">
-      <div class="card-header">⚙️ Tournament Settings</div>
-      <div class="card-body">
-        <div class="toggle-row">
-          <div class="toggle-label">
-            <h4>Lock Picks</h4>
-            <p>When ON, no new submissions are accepted and picks become visible to all</p>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="togglePicksLocked" onchange="saveSetting('picks_locked', this.checked)">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div id="settingsAlert"></div>
-      </div>
+    <select id="draw-select">
+      <option value="mens">Men's Draw</option>
+      <option value="womens">Women's Draw</option>
+    </select>
+
+    <select id="round-select">
+      <option value="r3">Round 3 (survived Round 2)</option>
+      <option value="r4">Round of 16</option>
+      <option value="qf">Quarterfinal</option>
+      <option value="sf">Semifinal</option>
+      <option value="f">Final</option>
+      <option value="w">Winner / Champion</option>
+    </select>
+
+    <input type="text" id="winner-input" placeholder="Winner's full name (exactly as in player list)"
+      style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:var(--radius);color:var(--cream);font-size:14px;margin-bottom:10px;outline:none;" />
+
+    <div class="result-row">
+      <label>
+        <input type="checkbox" id="ss-check" />
+        Won in straight sets
+      </label>
     </div>
 
-    <!-- ENTER RESULTS -->
-    <div class="card">
-      <div class="card-header">📥 Enter Match Results</div>
-      <div class="card-body">
-        <div class="two-col">
-          <div class="form-group">
-            <label>Gender</label>
-            <select id="resultGender" onchange="updateResultPlayerList()">
-              <option value="mens">Men's Singles</option>
-              <option value="womens">Women's Singles</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Round</label>
-            <select id="resultRound">
-              <option value="r1">Round 1</option>
-              <option value="r2">Round 2</option>
-              <option value="r3">Round 3 (R16)</option>
-              <option value="qf">Quarterfinal</option>
-              <option value="sf">Semifinal</option>
-              <option value="f">Final / Champion</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Winner</label>
-          <select id="resultWinner">
-            <option value="">— Select winner —</option>
-          </select>
-        </div>
-        <div class="toggle-row" style="margin-bottom:16px">
-          <div class="toggle-label">
-            <h4>Straight Sets Win?</h4>
-            <p>Winner won without dropping a set (+bonus pts)</p>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="resultStraightSets">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div id="resultAlert"></div>
-        <button class="btn btn-green btn-full" onclick="saveResult()">Save Result</button>
-      </div>
-    </div>
+    <button class="btn btn-gold" onclick="saveResult()" style="width:100%;margin-top:6px;">Save Result</button>
 
-    <!-- RESULTS LIST -->
-    <div class="card">
-      <div class="card-header">
-        <span>📋 Entered Results</span>
-        <button class="btn btn-gold" style="font-size:12px;padding:5px 12px;" onclick="loadResults()">↻ Refresh</button>
-      </div>
-      <div id="resultsList"><div style="padding:20px;color:#aaa;text-align:center">Loading...</div></div>
+    <div class="saved-results" id="saved-results">
+      <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,0.4);margin-bottom:8px;margin-top:16px;">Saved Results</div>
+      <div id="results-list" style="color:rgba(245,240,232,0.4);font-size:13px;">Loading…</div>
     </div>
+  </div>
 
-    <!-- SUBMISSIONS -->
-    <div class="card">
-      <div class="card-header">
-        <span>👥 Submissions (${0})</span>
-        <button class="btn btn-gold" style="font-size:12px;padding:5px 12px;" onclick="loadPicks()">↻ Refresh</button>
-      </div>
-      <div id="picksList"><div style="padding:20px;color:#aaa;text-align:center">Loading...</div></div>
+  <!-- SUBMITTED PICKS -->
+  <div class="card">
+    <div class="card-title">Submitted Picks</div>
+    <div id="picks-table">
+      <div style="color:rgba(245,240,232,0.4);font-size:13px;">Loading…</div>
     </div>
+  </div>
 
+  <!-- DANGER ZONE -->
+  <div class="card" style="border-color:rgba(200,60,60,0.3);">
+    <div class="card-title" style="color:#f08080;">Danger Zone</div>
+    <p style="font-size:13px;color:rgba(245,240,232,0.55);margin-bottom:14px;">These actions cannot be undone.</p>
+    <button class="btn btn-red" onclick="clearResults()">Clear All Results</button>
   </div>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://mqaeefbptvxjglpuvfbu.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xYWVlZmJwdHZ4amdscHV2ZmJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NTMxODcsImV4cCI6MjA5ODIyOTE4N30.nYa84B2v5szV057Ao3N-3q2VeqpV4uFqwQOs3W4IB90';
-const ADMIN_PASSWORD = 'wimbledon2026';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xYWVlZmJwdHZ4amducHV2ZmJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MTk2NTIsImV4cCI6MjA1OTE5NTY1Mn0.oTnQoamNEyjJSqXF4QKs2roFw7pnE_TTBGiUQf3mFsA';
+const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
+const PW = 'wimbledon2026';
 
-const MENS_PLAYERS = ["Jannik Sinner","Alexander Zverev","Novak Djokovic","Felix Auger-Aliassime","Ben Shelton","Alex de Minaur","Taylor Fritz","Daniil Medvedev","Flavio Cobolli","Alexander Bublik","Casper Ruud","Andrey Rublev","Jiri Lehecka","Luciano Darderi","Jakub Mensik","Learner Tien","Frances Tiafoe","Francisco Cerundolo","Karen Khachanov","Arthur Fils","Tommy Paul","A Davidovich Fokina","Rafael Jodar","Joao Fonseca","Artur Rinderknech","Cameron Norrie","Ugo Humbert","Brandon Nakashima","Tomas Etcheverry","Alejandro Tabilo","Ignacio Buse","Matteo Arnaldi","Denis Shapovalov","Hubert Hurkacz","Grigor Dimitrov","Stefanos Tsitsipas","Matteo Berrettini","Stan Wawrinka","Giovani Mpetshi Perricard","Jack Draper","Mackenzie McDonald","Gabriel Diallo","Lorenzo Sonego","Terence Atmane","Jan Choinski","Vilius Gaubas","Thanasi Kokkinakis","Alexi Popyrin","Daniel Altmaier","Jacob Fearnley","Jaume Munar","Quentin Halys","Marcos Giron","Harry Wendelken","Alex Bockx","Nuno Borges","Tristan Boyer","Aleksandr Vukic","Jenson Brooksby","Emiliano Nava","Felix Gill","Pablo Carreno Busta","Max Basing","Ethan Quinn","Sebastian Ofner","Martin Landaluce","Alexandre Muller","Jack Pinnington Jones","Sebastian Baez","Daniel Merida","Marin Cilic","Alexander Shevchenko","Dino Prizmic","Nicolas Meija","M Zheng","Juan Francisco Cerundolo","Fabian Marozsan","Marton Fucsovics","Dalibor Svrcina","Roman Safiullin","Botic van de Zandschulp","Rinky Hijikata","Roberto Bautista Agut","Oliver Tarvet","Martin Damm","Hugo Gaston","Y.B. Wu","Roman Burruchaga","Titouan Droguet","Zachary Svajda","Kamil Majchrzak","Billy Harris","Yannick Hanfmann","Tallon Griekspoor","James Duckworth","Mariano Navone","Toby Samuel","Dane Sweeny","Raphael Collignon","Zizou Bergs","Sho Shimabukuro","Jaime Faria","Damir Dzumhur","Arthur Fery","Otto Virtanen","Patrick Kypson","Benjamin Bonzi","Miromir Kecmanovic","Hamad Medjedovic","S.W. Kwon","Aleksandar Kovacevic","Jesper de Jong","Marco Trungelliti","Luca Van Assche","Valentin Royer","Corentin Moutet","Adrian Mannarino","Matia Bellucci","Adolfo Vallejo","Camilio Ugo Carabelli","Jan Lennard Struff"];
-const WOMENS_PLAYERS = ["Aryna Sabalenka","Elena Rybakina","Iga Swiatek","Jessica Pegula","Mirra Andreeva","Amanda Anisimova","Coco Gauff","Elina Svitolina","Linda Noskova","Karolina Muchova","Belinda Bencic","Marta Kostyuk","Jasmine Paolini","Naomi Osaka","Diana Shnaider","Iva Jovic","Sorana Cristea","Ekaterina Alexandrova","Anna Kalinskaya","Emma Navarro","Marie Bouzkova","Leylah Fernandez","Emma Navarro","Clara Tauson","Elise Mertens","Madison Keys","Anastasia Potapova","Ann Li","Alexandra Eala","Emma Raducanu","Donna Vekic","K Siniakova","Serena Williams","Daria Kasatkina","Qinwen Zheng","Anastasia Potapova","Barbora Krejcikova","Magda Linette","Darja Vidmanova","Dayana Yastremska","Panna Udvardy","Tatjana Maria","Mika Stojsavljevic","Diane Parry","Robin Montgomery","Viktorija Golubic","Kamilia Rakhimova","Maria Sakkari","Renata Zarazua","Maya Joint","Karolina Pliskova","Taylor Townsend","Lina Gjorcheska","Petra Marcinko","Katie Swan","Kayla Day","Sara Bejlek","Alina Korneeva","Simona Waltert","Ella Seidel","Eva Lys","Liudmila Samsonova","Tyra Caterina Grant","Talia Gibson","Laura Siegemund","Maria Timofeeva","Caty McNally","Lois Boisson","Teodora Kostovic","McCartney Kessler","Harriet Dart","Antonia Ruzic","Janice Tjen","Mingge Xu","Emiliana Arango","Elsa Jacquemot","A Zakharova","Shuai Zhang","Alicia Dudeney","Maja Chwalinska","Nikola Bartunkova","Hannah Klugman","Victoria Jimenez Kasintseva","Aoi Ito","Jessica Bouzas Maneiro","Lanlana Taraudee","Lilli Tagger","Jaqueline Cristian","Xinyu Wang","Elisabetta Cocciaretto","Francesca Jones","Magdalena Frech","Zenyep Sonmez","Claire Liu","Hanne Vandewinkel","Solana Sierra","Ana Bondar","Tamara Korpatsch","Daria Snigur","Veronika Erjavec","Leolia Jeanjean","Alja Tomljanovic","Mariam Bolkvadze","Ashlynn Krueger","Paula Badosa","Oksana Selekhmeteva","Sinja Kraus","Yuliia Starodubtseva","Anna Blinkova","Nadia Podoroska","Iryna Shymanovich","Anhelina Kalinina","Sara Sorribes Tormo","Yulia Putintseva","Oleksandra Oliynykova","Jelena Ostapenko","Bianca Andreescu","Alyicia Parks","Mananchaya Sawagkaew","Payton Stearns","Kimberley Birrell","Camilia Osorio","Polina Kudermetova","Katie Boulter","Beatriz Haddad Maia","Elena-Gabriella Ruse"];
-
-const ROUND_NAMES = { r1:'Round 1', r2:'Round 2', r3:'Round 3 (R16)', qf:'Quarterfinal', sf:'Semifinal', f:'Final' };
-
-async function sbFetch(endpoint, options = {}) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || 'return=representation',
-      ...options.headers
-    },
-    ...options
-  });
-  const text = await res.text();
-  if (!res.ok) {
-    let err = {};
-    try { err = JSON.parse(text); } catch(e) {}
-    throw new Error(err.message || res.statusText);
-  }
-  if (!text || text.trim() === '') return null;
-  try { return JSON.parse(text); } catch(e) { return null; }
-}
-
-function login() {
-  const pw = document.getElementById('adminPassword').value;
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('adminPage').style.display = 'block';
-    init();
+function checkPw() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === PW) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('admin').style.display = 'block';
+    loadAll();
   } else {
-    document.getElementById('loginError').innerHTML = '<div class="alert alert-error" style="margin-top:12px">Incorrect password.</div>';
+    document.getElementById('pw-err').textContent = 'Incorrect password.';
   }
 }
 
-function updateResultPlayerList() {
-  const gender = document.getElementById('resultGender').value;
-  const players = gender === 'mens' ? MENS_PLAYERS : WOMENS_PLAYERS;
-  const sel = document.getElementById('resultWinner');
-  sel.innerHTML = '<option value="">— Select winner —</option>';
-  [...new Set(players)].sort().forEach(p => {
-    sel.innerHTML += `<option value="${p}">${p}</option>`;
+async function loadAll() {
+  await Promise.all([loadLockStatus(), loadResults(), loadPicks()]);
+}
+
+async function loadLockStatus() {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.picks_locked&select=value`, { headers: H });
+  const d = await r.json();
+  const locked = d?.[0]?.value === 'true';
+  document.getElementById('lock-toggle').checked = locked;
+  document.getElementById('lock-sub').textContent = locked
+    ? 'Picks are currently LOCKED. Players cannot edit their team.'
+    : 'Picks are open. Players can still edit their team.';
+}
+
+async function saveLock(val) {
+  const body = JSON.stringify({ key: 'picks_locked', value: String(val) });
+  await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.picks_locked`, {
+    method: 'PATCH',
+    headers: { ...H, Prefer: 'resolution=merge-duplicates' },
+    body,
   });
-}
-
-async function saveSetting(key, value) {
-  try {
-    // Upsert into settings table
-    await sbFetch('settings', {
-      method: 'POST',
-      prefer: 'resolution=merge-duplicates,return=representation',
-      body: JSON.stringify({ key, value: String(value) })
-    });
-    document.getElementById('settingsAlert').innerHTML = `<div class="alert alert-success">✅ Setting saved.</div>`;
-    setTimeout(() => document.getElementById('settingsAlert').innerHTML = '', 2000);
-  } catch(e) {
-    document.getElementById('settingsAlert').innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
-  }
-}
-
-async function saveResult() {
-  const gender = document.getElementById('resultGender').value;
-  const round = document.getElementById('resultRound').value;
-  const winner = document.getElementById('resultWinner').value;
-  const straight_sets = document.getElementById('resultStraightSets').checked;
-
-  if (!winner) { document.getElementById('resultAlert').innerHTML = '<div class="alert alert-error">Select a winner first.</div>'; return; }
-
-  // round key e.g. "mens_r1" or "champion_m" for final
-  let roundKey = `${gender}_${round}`;
-  if (round === 'f') {
-    // Also save champion
-    roundKey = `${gender}_f`;
-    try {
-      await sbFetch('results', {
-        method: 'POST',
-        prefer: 'resolution=merge-duplicates,return=representation',
-        body: JSON.stringify({ round: gender === 'mens' ? 'champion_m' : 'champion_w', winner, straight_sets: false })
-      });
-    } catch(e) {}
-  }
-
-  try {
-    await sbFetch('results', {
-      method: 'POST',
-      prefer: 'resolution=merge-duplicates,return=representation',
-      body: JSON.stringify({ round: roundKey, winner, straight_sets })
-    });
-    document.getElementById('resultAlert').innerHTML = `<div class="alert alert-success">✅ Result saved: ${winner} won ${ROUND_NAMES[round] || round} (${gender})${straight_sets ? ' — straight sets' : ''}</div>`;
-    document.getElementById('resultStraightSets').checked = false;
-    loadResults();
-  } catch(e) {
-    document.getElementById('resultAlert').innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
-  }
-}
-
-async function deleteResult(round) {
-  if (!confirm(`Delete result for ${round}?`)) return;
-  try {
-    await sbFetch(`results?round=eq.${encodeURIComponent(round)}`, { method: 'DELETE', prefer: 'return=representation' });
-    loadResults();
-  } catch(e) { alert('Error: ' + e.message); }
+  document.getElementById('lock-sub').textContent = val
+    ? 'Picks are currently LOCKED. Players cannot edit their team.'
+    : 'Picks are open. Players can still edit their team.';
+  showToast(val ? '🔒 Picks locked.' : '🔓 Picks unlocked.');
 }
 
 async function loadResults() {
-  try {
-    const results = await sbFetch('results?select=*&order=created_at.desc');
-    const el = document.getElementById('resultsList');
-    if (!results || results.length === 0) {
-      el.innerHTML = '<div style="padding:20px;text-align:center;color:#aaa;font-size:13px">No results entered yet.</div>';
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/results?select=*&order=created_at.asc`, { headers: H });
+  const results = await r.json();
+  const el = document.getElementById('results-list');
+  if (!results?.length) { el.textContent = 'No results entered yet.'; return; }
+  el.innerHTML = results.map(r =>
+    `<div class="result-item">
+      <span class="result-key">${r.round}</span>
+      <span>
+        <span class="result-winner">${r.winner}</span>
+        ${r.straight_sets ? '<span class="result-ss">straight sets</span>' : ''}
+      </span>
+    </div>`
+  ).join('');
+}
+
+async function saveResult() {
+  const draw = document.getElementById('draw-select').value;
+  const round = document.getElementById('round-select').value;
+  const winner = document.getElementById('winner-input').value.trim();
+  const ss = document.getElementById('ss-check').checked;
+
+  if (!winner) { showToast('Enter a winner name.'); return; }
+
+  // For winner round, also save champion record
+  const roundKey = `${draw}_${round}`;
+  const rows = [{ round: roundKey, winner, straight_sets: ss }];
+  if (round === 'w') {
+    rows.push({ round: `champion_${draw}`, winner, straight_sets: false });
+  }
+
+  for (const row of rows) {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/results`, {
+      method: 'POST',
+      headers: { ...H, Prefer: 'resolution=merge-duplicates' },
+      body: JSON.stringify(row),
+    });
+    const text = await resp.text();
+    if (!resp.ok && resp.status !== 201) {
+      showToast('Error: ' + text.slice(0, 60));
       return;
     }
-    el.innerHTML = results.map(r => `
-      <div class="result-row">
-        <div class="result-round">${r.round}</div>
-        <div class="result-winner">${r.winner}</div>
-        <div>
-          ${r.straight_sets ? '<span class="result-badge straight">Str. Sets</span>' : ''}
-        </div>
-        <button class="delete-btn" onclick="deleteResult('${r.round}')">🗑</button>
-      </div>
-    `).join('');
-  } catch(e) {
-    document.getElementById('resultsList').innerHTML = `<div class="alert alert-error" style="margin:12px">Error: ${e.message}</div>`;
   }
+
+  showToast(`✅ Saved: ${winner} won ${draw} ${round}`);
+  document.getElementById('winner-input').value = '';
+  document.getElementById('ss-check').checked = false;
+  loadResults();
 }
 
 async function loadPicks() {
-  try {
-    const picks = await sbFetch('picks?select=*&order=submitted_at.asc');
-    const el = document.getElementById('picksList');
-    if (!picks || picks.length === 0) {
-      el.innerHTML = '<div style="padding:20px;text-align:center;color:#aaa;font-size:13px">No submissions yet.</div>';
-      return;
-    }
-    const rounds = ['r1','r2','r3','qf','sf','f'];
-    el.innerHTML = `<div style="overflow-x:auto"><table class="picks-table">
-      <thead><tr>
-        <th>Name</th>
-        <th>M Champ</th><th>W Champ</th>
-        ${rounds.map(r => `<th>M ${r.toUpperCase()}</th><th>W ${r.toUpperCase()}</th>`).join('')}
-        <th>Submitted</th>
-      </tr></thead>
-      <tbody>
-        ${picks.map(p => `<tr>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.mens_champion || '—'}</td>
-          <td>${p.womens_champion || '—'}</td>
-          ${rounds.map(r => `<td>${p[`mens_${r}`] || '—'}</td><td>${p[`womens_${r}`] || '—'}</td>`).join('')}
-          <td style="color:#aaa;font-size:11px">${new Date(p.submitted_at).toLocaleString()}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
-  } catch(e) {
-    document.getElementById('picksList').innerHTML = `<div class="alert alert-error" style="margin:12px">Error: ${e.message}</div>`;
-  }
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/picks?select=*&order=submitted_at.asc`, { headers: H });
+  const picks = await r.json();
+  const el = document.getElementById('picks-table');
+  if (!picks?.length) { el.innerHTML = '<div style="color:rgba(245,240,232,0.4);font-size:13px;">No picks submitted yet.</div>'; return; }
+
+  const safeJSON = s => { try { return JSON.parse(s); } catch { return {}; } };
+  el.innerHTML = `<table class="picks-table">
+    <thead><tr><th>Name</th><th>Men's</th><th>Women's</th></tr></thead>
+    <tbody>
+      ${picks.map(p => {
+        const mp = safeJSON(p.mens_picks);
+        const wp = safeJSON(p.womens_picks);
+        const mAll = [...(mp?.t1||[]),...(mp?.t2||[]),...(mp?.t3||[])];
+        const wAll = [...(wp?.t1||[]),...(wp?.t2||[]),...(wp?.t3||[])];
+        return `<tr>
+          <td><strong>${p.name}</strong><div style="font-size:11px;color:rgba(245,240,232,0.4);">${new Date(p.submitted_at).toLocaleDateString()}</div></td>
+          <td><div class="pick-list">${mAll.join('<br>') || '—'}</div></td>
+          <td><div class="pick-list">${wAll.join('<br>') || '—'}</div></td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
 }
 
-async function loadSettingsState() {
-  try {
-    const rows = await sbFetch('settings?select=*');
-    if (rows) {
-      rows.forEach(r => {
-        if (r.key === 'picks_locked') {
-          document.getElementById('togglePicksLocked').checked = r.value === 'true';
-        }
-      });
-    }
-  } catch(e) {}
-}
-
-function init() {
-  updateResultPlayerList();
-  loadSettingsState();
+async function clearResults() {
+  if (!confirm('Delete ALL results? This cannot be undone.')) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/results?round=neq.null`, { method: 'DELETE', headers: H });
+  showToast('All results cleared.');
   loadResults();
-  loadPicks();
 }
 
-document.addEventListener('keyup', e => {
-  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') login();
-});
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
 </script>
 </body>
 </html>
