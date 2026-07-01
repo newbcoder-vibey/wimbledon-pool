@@ -220,6 +220,21 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .edit-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 13px;
+    font-family: inherit;
+    margin-bottom: 10px;
+    outline: none;
+    resize: vertical;
+  }
+  .edit-textarea:focus { border-color: var(--gold); }
 </style>
 </head>
 <body>
@@ -303,6 +318,42 @@
     <div class="card-title">Submitted Picks</div>
     <div id="picks-table">
       <div style="color:rgba(245,240,232,0.4);font-size:13px;">Loading…</div>
+    </div>
+  </div>
+
+  <!-- EDIT PICKS -->
+  <div class="card">
+    <div class="card-title">Edit Picks (Commissioner)</div>
+    <p style="font-size:13px;color:rgba(245,240,232,0.55);margin-bottom:14px;">
+      Select a person to fix their team after eliminations. One player per line. Tier sizes: T1 = 2, T2 = 3, T3 = 5.
+    </p>
+    <select id="edit-person-select" onchange="loadPersonForEdit(this.value)">
+      <option value="">— Select a person —</option>
+    </select>
+
+    <div id="edit-form" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;">
+        <div>
+          <div style="font-size:12px;color:var(--gold);margin-bottom:6px;font-weight:600;">MEN'S DRAW</div>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 1 (2)</label>
+          <textarea id="edit-m-t1" rows="2" class="edit-textarea"></textarea>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 2 (3)</label>
+          <textarea id="edit-m-t2" rows="3" class="edit-textarea"></textarea>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 3 (5)</label>
+          <textarea id="edit-m-t3" rows="5" class="edit-textarea"></textarea>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--gold);margin-bottom:6px;font-weight:600;">WOMEN'S DRAW</div>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 1 (2)</label>
+          <textarea id="edit-w-t1" rows="2" class="edit-textarea"></textarea>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 2 (3)</label>
+          <textarea id="edit-w-t2" rows="3" class="edit-textarea"></textarea>
+          <label style="font-size:11px;color:rgba(245,240,232,0.5);">Tier 3 (5)</label>
+          <textarea id="edit-w-t3" rows="5" class="edit-textarea"></textarea>
+        </div>
+      </div>
+      <div id="edit-count-warning" style="font-size:12px;color:#f08080;margin-top:8px;"></div>
+      <button class="btn btn-gold" style="width:100%;margin-top:12px;" onclick="savePersonEdit()">Save Changes</button>
     </div>
   </div>
 
@@ -411,6 +462,7 @@ async function saveResult() {
 async function loadPicks() {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/picks?select=*&order=submitted_at.asc`, { headers: H });
   const picks = await r.json();
+  window.ALL_PICKS = picks; // cache for the edit panel
   const el = document.getElementById('picks-table');
   if (!picks?.length) { el.innerHTML = '<div style="color:rgba(245,240,232,0.4);font-size:13px;">No picks submitted yet.</div>'; return; }
 
@@ -431,6 +483,76 @@ async function loadPicks() {
       }).join('')}
     </tbody>
   </table>`;
+
+  // populate the edit dropdown
+  const sel = document.getElementById('edit-person-select');
+  sel.innerHTML = '<option value="">— Select a person —</option>' +
+    picks.map(p => `<option value="${p.name.replace(/"/g,'&quot;')}">${p.name}</option>`).join('');
+}
+
+function loadPersonForEdit(name) {
+  const form = document.getElementById('edit-form');
+  if (!name) { form.style.display = 'none'; return; }
+  const p = (window.ALL_PICKS || []).find(x => x.name === name);
+  if (!p) { form.style.display = 'none'; return; }
+
+  const safeJSON = s => { try { return JSON.parse(s); } catch { return {}; } };
+  const mp = safeJSON(p.mens_picks) || {};
+  const wp = safeJSON(p.womens_picks) || {};
+
+  document.getElementById('edit-m-t1').value = (mp.t1 || []).join('\n');
+  document.getElementById('edit-m-t2').value = (mp.t2 || []).join('\n');
+  document.getElementById('edit-m-t3').value = (mp.t3 || []).join('\n');
+  document.getElementById('edit-w-t1').value = (wp.t1 || []).join('\n');
+  document.getElementById('edit-w-t2').value = (wp.t2 || []).join('\n');
+  document.getElementById('edit-w-t3').value = (wp.t3 || []).join('\n');
+  document.getElementById('edit-count-warning').textContent = '';
+  form.style.display = 'block';
+}
+
+function linesOf(id) {
+  return document.getElementById(id).value
+    .split('\n').map(s => s.trim()).filter(Boolean);
+}
+
+async function savePersonEdit() {
+  const name = document.getElementById('edit-person-select').value;
+  if (!name) return;
+
+  const mt1 = linesOf('edit-m-t1'), mt2 = linesOf('edit-m-t2'), mt3 = linesOf('edit-m-t3');
+  const wt1 = linesOf('edit-w-t1'), wt2 = linesOf('edit-w-t2'), wt3 = linesOf('edit-w-t3');
+
+  const warn = [];
+  if (mt1.length !== 2) warn.push(`Men's T1 has ${mt1.length}, expected 2`);
+  if (mt2.length !== 3) warn.push(`Men's T2 has ${mt2.length}, expected 3`);
+  if (mt3.length !== 5) warn.push(`Men's T3 has ${mt3.length}, expected 5`);
+  if (wt1.length !== 2) warn.push(`Women's T1 has ${wt1.length}, expected 2`);
+  if (wt2.length !== 3) warn.push(`Women's T2 has ${wt2.length}, expected 3`);
+  if (wt3.length !== 5) warn.push(`Women's T3 has ${wt3.length}, expected 5`);
+
+  const warnEl = document.getElementById('edit-count-warning');
+  if (warn.length) {
+    warnEl.textContent = '⚠ ' + warn.join(' · ') + ' — saving anyway, but double-check.';
+  } else {
+    warnEl.textContent = '';
+  }
+
+  const mens_picks = JSON.stringify({ t1: mt1, t2: mt2, t3: mt3 });
+  const womens_picks = JSON.stringify({ t1: wt1, t2: wt2, t3: wt3 });
+
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/picks?name=eq.${encodeURIComponent(name)}`, {
+    method: 'PATCH',
+    headers: { ...H, Prefer: 'return=minimal' },
+    body: JSON.stringify({ mens_picks, womens_picks }),
+  });
+
+  if (resp.ok || resp.status === 204) {
+    showToast(`✅ Updated ${name}'s picks.`);
+    loadPicks();
+  } else {
+    const text = await resp.text();
+    showToast('Error: ' + text.slice(0, 80));
+  }
 }
 
 async function clearResults() {
