@@ -1064,14 +1064,17 @@ async function submitPicks() {
 async function loadLeaderboard() {
   const container = document.getElementById('leaderboard-content');
   try {
-    const [pr, rr, sr] = await Promise.all([
+    const [pr, rr, sr, er] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/picks?select=*&order=submitted_at.asc`, { headers: HEADERS }),
       fetch(`${SUPABASE_URL}/rest/v1/results?select=*`, { headers: HEADERS }),
       fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.picks_locked&select=value`, { headers: HEADERS }),
+      fetch(`${SUPABASE_URL}/rest/v1/eliminated?select=*`, { headers: HEADERS }),
     ]);
     const picks = await pr.json();
     const results = await rr.json();
     const settings = await sr.json();
+    const eliminatedRows = await er.json();
+    const eliminatedSet = new Set((eliminatedRows||[]).map(e => e.name));
     const locked = settings?.[0]?.value === 'true';
 
     if (!locked) {
@@ -1108,7 +1111,7 @@ async function loadLeaderboard() {
           <div style="text-align:right;"><div class="lb-score">${e.total}</div><div class="lb-pts-label">pts</div></div>
           <span class="chevron-icon">▾</span>
         </div>
-        <div class="lb-detail">${detailHTML(e, resMap)}</div>
+        <div class="lb-detail">${detailHTML(e, resMap, eliminatedSet)}</div>
       </div>`).join('');
   } catch(err) {
     console.error(err);
@@ -1116,15 +1119,16 @@ async function loadLeaderboard() {
   }
 }
 
-function detailHTML(e, resMap) {
+function detailHTML(e, resMap, eliminatedSet) {
   let html = '';
   const section = (label, players) => {
     if (!players?.length) return '';
     return `<div class="lb-section-label">${label}</div>` +
       players.map(n => {
         const pts = calcPts(n, resMap);
+        const out = eliminatedSet?.has(n);
         return `<div class="lb-player-row">
-          <span class="lb-player-name">${n}</span>
+          <span class="lb-player-name">${n}${out ? ' <span style="color:#f08080;font-size:11px;font-weight:600;letter-spacing:0.5px;">OUT</span>' : ''}</span>
           <span class="lb-player-pts ${pts===0?'zero':''}">${pts>0?'+'+pts:'—'}</span>
         </div>`;
       }).join('');
@@ -1144,7 +1148,10 @@ function buildResMap(results) {
   (results||[]).forEach(r => {
     if (!map[r.winner]) map[r.winner] = { rounds:[], champion:false };
     if (r.round==='champion_mens'||r.round==='champion_womens') map[r.winner].champion = true;
-    else map[r.winner].rounds.push({ round:r.round, ss:r.straight_sets });
+    else {
+      const roundKey = r.round.replace(/^(mens|womens)_/, ''); // strip draw prefix to match R_PTS keys
+      map[r.winner].rounds.push({ round:roundKey, ss:r.straight_sets });
+    }
   });
   return map;
 }
