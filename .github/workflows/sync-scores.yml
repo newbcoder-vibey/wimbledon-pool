@@ -1,0 +1,24 @@
+name: Sync Wimbledon Scores
+
+on:
+  schedule:
+    # Every 15 minutes, 09:00-19:00 UTC (roughly play hours at Wimbledon, BST).
+    # Harmless outside the tournament window — it just finds no completed matches.
+    - cron: '*/15 9-19 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync scores to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: node scripts/sync-scores.js --apply
